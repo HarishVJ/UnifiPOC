@@ -1,0 +1,2782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iLink - Late In Management System</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #EAEAEA;
+            color: #211F20;
+            line-height: 1.6;
+        }
+        
+        /* ===== LOGIN SCREEN ===== */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #B42025 0%, #EB2227 100%);
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #B42025 0%, #EB2227 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 30px;
+        }
+        
+        .login-card h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #211F20;
+            margin-bottom: 10px;
+        }
+        
+        .login-card p {
+            color: #757575;
+            margin-bottom: 40px;
+            font-size: 15px;
+        }
+        
+        .azure-btn {
+            width: 100%;
+            padding: 16px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .azure-btn:hover {
+            background: #006cbe;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,120,212,0.3);
+        }
+        
+        .demo-notice {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .demo-notice strong {
+            color: #B42025;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .demo-notice p {
+            font-size: 13px;
+            color: #757575;
+            margin-bottom: 0;
+        }
+        
+        /* ===== MAIN APP ===== */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            background: #EAEAEA;
+        }
+        
+        .app-container.show {
+            display: block;
+        }
+        
+        /* ===== HEADER ===== */
+        .app-header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .app-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #B42025 0%, #EB2227 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #211F20;
+            margin-bottom: 2px;
+        }
+        
+        .header-title p {
+            font-size: 13px;
+            color: #757575;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #B42025 0%, #EB2227 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #211F20;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #757575;
+        }
+        
+        .logout-btn {
+            padding: 10px 20px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+        }
+        
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .page-header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .page-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #B42025 0%, #EB2227 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .page-title-text h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #211F20;
+            margin-bottom: 4px;
+        }
+        
+        .page-title-text p {
+            font-size: 14px;
+            color: #757575;
+        }
+        
+        .demo-selector {
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+            border-radius: 8px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .demo-selector label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #c53030;
+        }
+        
+        .demo-selector select {
+            padding: 8px 12px;
+            border: 2px solid #feb2b2;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            background: white;
+            color: #c53030;
+            cursor: pointer;
+        }
+        
+        /* ===== FILTERS ===== */
+        .filters-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .filters-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #211F20;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #211F20;
+        }
+        
+        .filter-select, .filter-input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #211F20;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #B42025;
+            box-shadow: 0 0 0 3px rgba(180, 32, 37, 0.1);
+        }
+        
+        /* ===== DATE PICKER (MODERN DROPDOWN) ===== */
+        .date-picker-wrapper {
+            position: relative;
+        }
+        
+        .date-picker-display {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #211F20;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+        
+        .date-picker-display:hover {
+            border-color: #B42025;
+        }
+        
+        .date-picker-display.active {
+            border-color: #B42025;
+            box-shadow: 0 0 0 3px rgba(180, 32, 37, 0.1);
+        }
+        
+        .date-picker-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            z-index: 100;
+            display: none;
+        }
+        
+        .date-picker-dropdown.show {
+            display: block;
+        }
+        
+        .date-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid #f7fafc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .date-option:last-child {
+            border-bottom: none;
+        }
+        
+        .date-option:hover {
+            background: #f7fafc;
+        }
+        
+        .date-option.selected {
+            background: #edf2f7;
+            font-weight: 600;
+        }
+        
+        .date-option-label {
+            font-size: 14px;
+            color: #211F20;
+        }
+        
+        .date-option-date {
+            font-size: 12px;
+            color: #757575;
+        }
+        
+        .date-option.custom {
+            display: block;
+            background: #f7fafc;
+        }
+        
+        .custom-range-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .custom-range-inputs input {
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        
+        .apply-custom-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background: #B42025;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .apply-custom-btn:hover {
+            background: #9a1b1f;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #B42025;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #9a1b1f;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #757575;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        /* ===== STATS CARDS ===== */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .stat-icon.pending {
+            background: #fef5e7;
+        }
+        
+        .stat-icon.excused {
+            background: #d4edda;
+        }
+        
+        .stat-icon.unexcused {
+            background: #f8d7da;
+        }
+        
+        .stat-content h3 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #211F20;
+        }
+        
+        .stat-content p {
+            font-size: 14px;
+            color: #757575;
+        }
+        
+        /* ===== DATA TABLE ===== */
+        .table-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .table-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #211F20;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #38a169;
+        }
+        
+        .btn-success:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+        
+        .btn-danger:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table thead {
+            background: #f7fafc;
+        }
+        
+        .data-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 700;
+            color: #211F20;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .data-table th.checkbox-col {
+            width: 50px;
+            text-align: center;
+        }
+        
+        .data-table td {
+            padding: 20px;
+            border-bottom: 1px solid #f7fafc;
+            font-size: 14px;
+            color: #211F20;
+        }
+        
+        .data-table tr:hover {
+            background: #f7fafc;
+        }
+        
+        .data-table tbody tr.selected {
+            background: #edf2f7;
+        }
+        
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .employee-id {
+            font-weight: 600;
+            color: #B42025;
+        }
+        
+        .time-value {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        
+        .variance-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .variance-late {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .excused-select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .excused-select:focus {
+            outline: none;
+            border-color: #B42025;
+        }
+        
+        .excused-select.excused-yes {
+            background: #c6f6d5;
+            border-color: #48bb78;
+            color: #22543d;
+        }
+        
+        .excused-select.excused-no {
+            background: #fed7d7;
+            border-color: #f56565;
+            color: #742a2a;
+        }
+        
+        .excused-select.excused-empty {
+            background: #EBE1C3;
+            border-color: #C7AA5B;
+            color: #211F20;
+        }
+        
+        .comment-textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .comment-textarea:focus {
+            outline: none;
+            border-color: #B42025;
+        }
+        
+        .comment-textarea:disabled {
+            background: #f7fafc;
+            cursor: not-allowed;
+        }
+        
+        .kronos-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .kronos-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .kronos-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .kronos-pending {
+            background: #EBE1C3;
+            color: #211F20;
+        }
+        
+        .kronos-failed {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        /* ===== AMH SECTION (MODERN, CLEAN) ===== */
+        .amh-section {
+            margin-top: 15px;
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .amh-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #fc8181;
+        }
+        
+        .amh-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #c53030;
+        }
+        
+        .amh-badge {
+            padding: 4px 12px;
+            background: #c53030;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .amh-badge.complete {
+            background: #38a169;
+        }
+        
+        .amh-field {
+            margin-bottom: 18px;
+        }
+        
+        .amh-field:last-child {
+            margin-bottom: 0;
+        }
+        
+        .amh-field-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .amh-field-label-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #211F20;
+        }
+        
+        .required-star {
+            color: #e53e3e;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+        
+        .optional-tag {
+            font-size: 11px;
+            color: #757575;
+            font-style: italic;
+        }
+        
+        .amh-context {
+            background: white;
+            border-left: 4px solid #B42025;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #211F20;
+        }
+        
+        .amh-context-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #B42025;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .amh-context-text {
+            font-style: italic;
+            color: #757575;
+        }
+        
+        .amh-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            min-height: 70px;
+            resize: vertical;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .amh-textarea:focus {
+            outline: none;
+            border-color: #fc8181;
+            box-shadow: 0 0 0 3px rgba(252, 129, 129, 0.1);
+        }
+        
+        .amh-upload-area {
+            background: white;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .amh-upload-area:hover {
+            border-color: #fc8181;
+            background: #fff5f0;
+        }
+        
+        .amh-upload-area.has-file {
+            border-color: #48bb78;
+            border-style: solid;
+            background: #f0fff4;
+        }
+        
+        .amh-upload-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .amh-upload-text {
+            font-size: 14px;
+            color: #211F20;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .amh-upload-hint {
+            font-size: 12px;
+            color: #757575;
+        }
+        
+        .amh-file-display {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .amh-file-display.show {
+            display: flex;
+        }
+        
+        .amh-file-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #22543d;
+        }
+        
+        .amh-remove-btn {
+            padding: 6px 12px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .amh-remove-btn:hover {
+            background: #c53030;
+        }
+        
+        .amh-hint {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 6px;
+        }
+        
+        /* ===== VALIDATION ===== */
+        .validation-banner {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            padding: 20px 30px;
+            margin: 30px;
+            display: none;
+        }
+        
+        .validation-banner.show {
+            display: block;
+        }
+        
+        .validation-banner h4 {
+            color: #c53030;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .validation-list {
+            list-style: none;
+        }
+        
+        .validation-list li {
+            padding: 8px 0;
+            color: #742a2a;
+            font-size: 14px;
+        }
+        
+        .validation-list li::before {
+            content: "•";
+            color: #e53e3e;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #B42025;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 10000;
+            animation: slideInUp 0.3s ease-out;
+        }
+        
+        .toast.show {
+            display: flex;
+        }
+        
+        .toast.success {
+            border-left: 4px solid #48bb78;
+        }
+        
+        .toast.error {
+            border-left: 4px solid #f56565;
+        }
+        
+        .toast.info {
+            border-left: 4px solid #4299e1;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* ===== PAGINATION ===== */
+        .pagination-section {
+            padding: 20px 30px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+        }
+        
+        .pagination-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #757575;
+            font-size: 14px;
+        }
+        
+        .pagination-info strong {
+            color: #211F20;
+            font-weight: 600;
+        }
+        
+        .rows-per-page {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rows-per-page label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #211F20;
+        }
+        
+        .rows-per-page select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            background: white;
+            color: #211F20;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .rows-per-page select:focus {
+            outline: none;
+            border-color: #B42025;
+            box-shadow: 0 0 0 3px rgba(180, 32, 37, 0.1);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #211F20;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            border-color: #B42025;
+            background: #fff5f5;
+            color: #B42025;
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .page-btn.active {
+            background: #B42025;
+            border-color: #B42025;
+            color: white;
+        }
+        
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .page-number {
+            min-width: 40px;
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #211F20;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .page-number:hover {
+            border-color: #B42025;
+            background: #fff5f5;
+            color: #B42025;
+        }
+        
+        .page-number.active {
+            background: #B42025;
+            border-color: #B42025;
+            color: white;
+        }
+        
+        .page-ellipsis {
+            padding: 8px 12px;
+            color: #757575;
+            font-weight: 600;
+        }
+        
+        /* ===== MODAL DIALOGS ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #211F20;
+            margin: 0;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f7fafc;
+            border-radius: 6px;
+            font-size: 20px;
+            color: #757575;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: #e2e8f0;
+            color: #211F20;
+        }
+        
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .modal-body p {
+            color: #211F20;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-body strong {
+            color: #B42025;
+        }
+        
+        .bulk-field {
+            margin-bottom: 20px;
+        }
+        
+        .bulk-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #211F20;
+            margin-bottom: 8px;
+        }
+        
+        .bulk-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #211F20;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .bulk-select:focus {
+            outline: none;
+            border-color: #B42025;
+            box-shadow: 0 0 0 3px rgba(180, 32, 37, 0.1);
+        }
+        
+        .bulk-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #211F20;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+        
+        .bulk-textarea:focus {
+            outline: none;
+            border-color: #B42025;
+            box-shadow: 0 0 0 3px rgba(180, 32, 37, 0.1);
+        }
+        
+        .bulk-note {
+            background: #EBE1C3;
+            border-left: 4px solid #C7AA5B;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #211F20;
+            margin-top: 15px;
+        }
+        
+        .bulk-note strong {
+            color: #211F20;
+        }
+        
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 2px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .char-count {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 6px;
+            text-align: right;
+        }
+        
+        .char-count.warning {
+            color: #f6ad55;
+            font-weight: 600;
+        }
+        
+        .char-count.error {
+            color: #e53e3e;
+            font-weight: 700;
+        }
+        
+        /* ===== VALIDATION ERROR HIGHLIGHTING ===== */
+        .excused-select.validation-error {
+            border-color: #e53e3e !important;
+            background: #fff5f5 !important;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important;
+        }
+        
+        .comment-textarea.validation-error {
+            border-color: #e53e3e !important;
+            background: #fff5f5 !important;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important;
+        }
+        
+        .amh-textarea.validation-error {
+            border-color: #e53e3e !important;
+            background: #fff5f5 !important;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important;
+        }
+        
+        .amh-upload-area.validation-error {
+            border-color: #e53e3e !important;
+            background: #fff5f5 !important;
+        }
+        
+        .validation-error-label {
+            color: #e53e3e !important;
+            font-weight: 700 !important;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .page-header-top {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .data-table {
+                font-size: 12px;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 12px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== LOGIN SCREEN ===== -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">iL</div>
+            <h1>iLink Login</h1>
+            <p>Late In Attendance Management System</p>
+            
+            <button class="azure-btn" onclick="login()">
+                <span>🔐</span>
+                <span>Sign in with Azure AD</span>
+            </button>
+            
+            <div class="demo-notice">
+                <strong>📺 Demo Mode</strong>
+                <p>After login, you can switch between different user roles (SM, AMH, Operations, Admin) using the role selector to see how each persona interacts with the system.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ===== MAIN APPLICATION ===== -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="app-logo">iL</div>
+                    <div class="header-title">
+                        <h1>iLink Attendance System</h1>
+                        <p>Late In Exception Management</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-badge">
+                        <div class="user-avatar">JS</div>
+                        <div class="user-info">
+                            <div class="user-name" id="userName">John Smith</div>
+                            <div class="user-role" id="userRole">Site Manager</div>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div class="page-title">
+                        <div class="page-icon">⏰</div>
+                        <div class="page-title-text">
+                            <h2>Late In Management</h2>
+                            <p>Review and process employee late arrival exceptions</p>
+                        </div>
+                    </div>
+                    <div class="demo-selector">
+                        <label>🎭 Demo Role:</label>
+                        <select id="personaSelect" onchange="changePersona()">
+                            <option value="sm">Site Manager (SM)</option>
+                            <option value="amh">Area Manager (AMH)</option>
+                            <option value="ops">Operations</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-title">
+                    <span>🔍</span>
+                    <span>Filters</span>
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Station</label>
+                        <select class="filter-select" id="stationSelect">
+                            <option>DTW - Detroit</option>
+                            <option>ORD - Chicago</option>
+                            <option>LAX - Los Angeles</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Customer</label>
+                        <select class="filter-select" id="customerSelect">
+                            <option>All Customers</option>
+                            <option>Delta Airlines</option>
+                            <option>United Airlines</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Line of Service</label>
+                        <select class="filter-select" id="losSelect">
+                            <option>All Services</option>
+                            <option>Cargo</option>
+                            <option>Passenger</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Job Code</label>
+                        <select class="filter-select" id="jobSelect">
+                            <option>All Job Codes</option>
+                            <option>Ramp Agent</option>
+                            <option>Supervisor</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Excused Status</label>
+                        <select class="filter-select" id="excusedFilter">
+                            <option value="">All</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Pending">Pending (Empty)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Date Range</label>
+                        <div class="date-picker-wrapper">
+                            <div class="date-picker-display" id="dateDisplay" onclick="toggleDatePicker()">
+                                <span id="dateDisplayText">Yesterday</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="date-picker-dropdown" id="dateDropdown">
+                                <div class="date-option selected" data-value="yesterday" onclick="selectDateOption('yesterday')">
+                                    <span class="date-option-label">Yesterday</span>
+                                    <span class="date-option-date" id="yesterdayDate"></span>
+                                </div>
+                                <div class="date-option" data-value="2days" onclick="selectDateOption('2days')">
+                                    <span class="date-option-label">2 Days Ago</span>
+                                    <span class="date-option-date" id="twoDaysDate"></span>
+                                </div>
+                                <div class="date-option" data-value="3days" onclick="selectDateOption('3days')">
+                                    <span class="date-option-label">3 Days Ago</span>
+                                    <span class="date-option-date" id="threeDaysDate"></span>
+                                </div>
+                                <div class="date-option custom">
+                                    <span class="date-option-label">Custom Range</span>
+                                    <div class="custom-range-inputs">
+                                        <input type="date" id="customStartDate">
+                                        <input type="date" id="customEndDate">
+                                    </div>
+                                    <button class="apply-custom-btn" onclick="applyCustomRange()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <span>✓</span>
+                        <span>Apply Filters</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">
+                        <span>↻</span>
+                        <span>Reset</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshGrid()">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon pending">⏳</div>
+                    <div class="stat-content">
+                        <h3 id="statPending">15</h3>
+                        <p>Pending Review</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon excused">✓</div>
+                    <div class="stat-content">
+                        <h3 id="statExcused">8</h3>
+                        <p>Excused</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon unexcused">✗</div>
+                    <div class="stat-content">
+                        <h3 id="statUnexcused">7</h3>
+                        <p>Unexcused</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Validation Banner -->
+            <div class="validation-banner" id="validationBanner">
+                <h4>
+                    <span>⚠️</span>
+                    <span>Please correct the following errors:</span>
+                </h4>
+                <ul class="validation-list" id="validationList"></ul>
+            </div>
+            
+            <!-- Data Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <div class="table-title">Late Arrival Records</div>
+                    <div class="table-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="selectAll()">
+                            <span>☑️</span>
+                            <span>Select All</span>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" id="bulkExcusedBtn" onclick="showBulkExcusedModal()" disabled>
+                            <span>📝</span>
+                            <span>Bulk Excused</span>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" id="bulkCommentBtn" onclick="showBulkCommentModal()" disabled>
+                            <span>💬</span>
+                            <span>Bulk Comment</span>
+                        </button>
+                        <button class="btn btn-sm btn-success" id="approveBtn" onclick="approveSelected()" disabled>
+                            <span>✓</span>
+                            <span>Approve Selected</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-col">
+                                    <input type="checkbox" class="checkbox-input" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                                </th>
+                                <th onclick="sortTable('employeeId')" style="cursor: pointer;">
+                                    Employee ID <span id="sort-employeeId">⇅</span>
+                                </th>
+                                <th onclick="sortTable('scheduleIn')" style="cursor: pointer;">
+                                    Schedule In <span id="sort-scheduleIn">⇅</span>
+                                </th>
+                                <th onclick="sortTable('scheduleOut')" style="cursor: pointer;">
+                                    Schedule Out <span id="sort-scheduleOut">⇅</span>
+                                </th>
+                                <th onclick="sortTable('clockedIn')" style="cursor: pointer;">
+                                    Clocked In <span id="sort-clockedIn">⇅</span>
+                                </th>
+                                <th onclick="sortTable('clockedOut')" style="cursor: pointer;">
+                                    Clocked Out <span id="sort-clockedOut">⇅</span>
+                                </th>
+                                <th onclick="sortTable('excused')" style="cursor: pointer;">
+                                    Excused (Y/N) <span style="color: #e53e3e;">*</span> <span id="sort-excused">⇅</span>
+                                </th>
+                                <th>Comment</th>
+                                <th>Kronos Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Rows will be generated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination Section -->
+                <div class="pagination-section">
+                    <div class="pagination-info">
+                        <div>
+                            <strong id="totalRecords">0</strong> records, 
+                            page <strong id="currentPageDisplay">1</strong> of <strong id="totalPages">1</strong>
+                        </div>
+                        <div class="rows-per-page">
+                            <label>Rows per page:</label>
+                            <select id="rowsPerPageSelect" onchange="changeRowsPerPage()">
+                                <option value="25">25</option>
+                                <option value="50" selected>50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" id="firstPageBtn" onclick="goToPage(1)" disabled>
+                            <span>⟪</span>
+                            <span>First</span>
+                        </button>
+                        <button class="page-btn" id="prevPageBtn" onclick="goToPage(currentPage - 1)" disabled>
+                            <span>‹</span>
+                            <span>Previous</span>
+                        </button>
+                        <div class="page-numbers" id="pageNumbers">
+                            <!-- Page numbers will be generated dynamically -->
+                        </div>
+                        <button class="page-btn" id="nextPageBtn" onclick="goToPage(currentPage + 1)">
+                            <span>Next</span>
+                            <span>›</span>
+                        </button>
+                        <button class="page-btn" id="lastPageBtn" onclick="goToPage(totalPagesCount)">
+                            <span>Last</span>
+                            <span>⟫</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
+    
+    <!-- Bulk Excused Modal -->
+    <div class="modal-overlay" id="bulkExcusedModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Bulk Update Excused Status</h3>
+                <button class="modal-close" onclick="closeBulkExcusedModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Apply Excused status to <strong id="bulkExcusedCount">0</strong> selected record(s):</p>
+                <div class="bulk-field">
+                    <label class="bulk-label">Excused Status:</label>
+                    <select class="bulk-select" id="bulkExcusedValue">
+                        <option value="">— Select —</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBulkExcusedModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="applyBulkExcused()">Apply to Selected</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Comment Modal -->
+    <div class="modal-overlay" id="bulkCommentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Bulk Update Comment</h3>
+                <button class="modal-close" onclick="closeBulkCommentModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Apply comment to <strong id="bulkCommentCount">0</strong> selected record(s):</p>
+                <div class="bulk-field">
+                    <label class="bulk-label">Comment:</label>
+                    <textarea class="bulk-textarea" id="bulkCommentValue" maxlength="500" placeholder="Enter comment (max 500 chars)..."></textarea>
+                    <div class="char-count" id="bulkCharCount">0 / 500</div>
+                </div>
+                <div class="bulk-note">
+                    <strong>Note:</strong> This comment will be applied to all selected records. Per-row success/failure summary will be shown after submission.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBulkCommentModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="applyBulkComment()">Apply to Selected</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ===== STATE MANAGEMENT =====
+        let currentPersona = 'sm';
+        let selectedRows = new Set();
+        let gridData = [];
+        let filteredData = []; // Data after filters applied
+        let currentDateFilter = 'yesterday';
+        
+        // Pagination state
+        let currentPage = 1;
+        let rowsPerPage = 50;
+        let totalPagesCount = 1;
+        
+        // Sorting state
+        let currentSortColumn = null;
+        let currentSortDirection = 'asc';
+        
+        // Persona configurations
+        const personas = {
+            sm: {
+                name: 'Site Manager',
+                role: 'Site Manager',
+                canEdit: true,
+                canEditExcused: true,
+                canEditComment: true,
+                showAMH: false,
+                avatar: 'SM'
+            },
+            amh: {
+                name: 'John Smith',
+                role: 'Area Manager',
+                canEdit: true,
+                canEditExcused: true,
+                canEditComment: true,
+                showAMH: true,
+                avatar: 'AM'
+            },
+            ops: {
+                name: 'Operations User',
+                role: 'Operations',
+                canEdit: false,
+                canEditExcused: false,
+                canEditComment: false,
+                showAMH: false,
+                avatar: 'OP'
+            },
+            admin: {
+                name: 'Admin User',
+                role: 'Administrator',
+                canEdit: false,
+                canEditExcused: false,
+                canEditComment: false,
+                showAMH: false,
+                avatar: 'AD'
+            }
+        };
+        
+        // ===== INITIALIZATION =====
+        function init() {
+            generateSampleData();
+            initializeDatePicker();
+            filteredData = [...gridData]; // Initialize filtered data
+            renderTable();
+            updateStats();
+            updatePagination();
+        }
+        
+        // ===== DATE PICKER =====
+        function initializeDatePicker() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const twoDays = new Date(today);
+            twoDays.setDate(twoDays.getDate() - 2);
+            const threeDays = new Date(today);
+            threeDays.setDate(threeDays.getDate() - 3);
+            
+            document.getElementById('yesterdayDate').textContent = formatDate(yesterday);
+            document.getElementById('twoDaysDate').textContent = formatDate(twoDays);
+            document.getElementById('threeDaysDate').textContent = formatDate(threeDays);
+            
+            // Set custom date max to yesterday
+            const maxDate = yesterday.toISOString().split('T')[0];
+            document.getElementById('customStartDate').max = maxDate;
+            document.getElementById('customEndDate').max = maxDate;
+        }
+        
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        
+        function toggleDatePicker() {
+            const dropdown = document.getElementById('dateDropdown');
+            const display = document.getElementById('dateDisplay');
+            dropdown.classList.toggle('show');
+            display.classList.toggle('active');
+        }
+        
+        function selectDateOption(value) {
+            currentDateFilter = value;
+            const labels = {
+                'yesterday': 'Yesterday',
+                '2days': '2 Days Ago',
+                '3days': '3 Days Ago'
+            };
+            
+            document.getElementById('dateDisplayText').textContent = labels[value];
+            
+            // Update selected state
+            document.querySelectorAll('.date-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.closest('.date-option').classList.add('selected');
+            
+            toggleDatePicker();
+            showToast('Date filter updated', 'info');
+        }
+        
+        function applyCustomRange() {
+            const startDate = document.getElementById('customStartDate').value;
+            const endDate = document.getElementById('customEndDate').value;
+            
+            if (!startDate || !endDate) {
+                showToast('Please select both start and end dates', 'error');
+                return;
+            }
+            
+            if (new Date(startDate) > new Date(endDate)) {
+                showToast('Start date must be before end date', 'error');
+                return;
+            }
+            
+            currentDateFilter = 'custom';
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            document.getElementById('dateDisplayText').textContent = 
+                `${formatDate(start)} - ${formatDate(end)}`;
+            
+            toggleDatePicker();
+            showToast('Custom date range applied', 'success');
+        }
+        
+        // Close date picker when clicking outside
+        document.addEventListener('click', function(event) {
+            const picker = document.querySelector('.date-picker-wrapper');
+            if (picker && !picker.contains(event.target)) {
+                document.getElementById('dateDropdown').classList.remove('show');
+                document.getElementById('dateDisplay').classList.remove('active');
+            }
+        });
+        
+        // Close modals when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                closeBulkExcusedModal();
+                closeBulkCommentModal();
+            }
+        });
+        
+        // ===== LOGIN/LOGOUT =====
+        function login() {
+            showLoading();
+            setTimeout(() => {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').classList.add('show');
+                hideLoading();
+                init();
+                showToast('Login successful!', 'success');
+            }, 1500);
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showLoading();
+                setTimeout(() => {
+                    document.getElementById('appContainer').classList.remove('show');
+                    document.getElementById('loginScreen').style.display = 'flex';
+                    hideLoading();
+                    showToast('Logged out successfully', 'info');
+                }, 1000);
+            }
+        }
+        
+        // ===== PERSONA MANAGEMENT =====
+        function changePersona() {
+            const select = document.getElementById('personaSelect');
+            currentPersona = select.value;
+            const persona = personas[currentPersona];
+            
+            document.getElementById('userName').textContent = persona.name;
+            document.getElementById('userRole').textContent = persona.role;
+            document.querySelector('.user-avatar').textContent = persona.avatar;
+            
+            selectedRows.clear();
+            renderTable();
+            updateActionButtons();
+            updatePagination();
+            
+            showToast(`Switched to ${persona.role} view`, 'info');
+        }
+        
+        // ===== DATA GENERATION =====
+        function generateSampleData() {
+            gridData = [];
+            // Generate 120 sample records for pagination demo
+            const prefixes = ['EMP', 'TMP', 'CTR', 'FTE'];
+            
+            for (let i = 1; i <= 120; i++) {
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const empId = `${prefix}${(10000 + i).toString()}`; // Alphanumeric format
+                
+                const minutesLate = Math.floor(Math.random() * 40) + 5;
+                const scheduleInHour = 8;
+                const scheduleOutHour = 16; // 8-hour shift
+                const clockedInMinute = minutesLate;
+                const clockedOutMinute = Math.floor(Math.random() * 30); // Random early/late out
+                
+                const scheduleIn = `${scheduleInHour.toString().padStart(2, '0')}:00`;
+                const scheduleOut = `${scheduleOutHour.toString().padStart(2, '0')}:00`;
+                const clockedIn = `${scheduleInHour.toString().padStart(2, '0')}:${clockedInMinute.toString().padStart(2, '0')}`;
+                const clockedOut = `${scheduleOutHour.toString().padStart(2, '0')}:${clockedOutMinute.toString().padStart(2, '0')}`;
+                
+                gridData.push({
+                    id: i - 1,
+                    employeeId: empId,
+                    scheduleIn: scheduleIn,
+                    scheduleOut: scheduleOut,
+                    clockedIn: clockedIn,
+                    clockedOut: clockedOut,
+                    variance: minutesLate,
+                    excused: i % 3 === 0 ? 'Yes' : i % 3 === 1 ? 'No' : '',
+                    comment: i % 2 === 0 ? 'Traffic delay due to highway accident' : '',
+                    kronosStatus: i % 3 === 0 ? 'success' : i % 3 === 1 ? 'pending' : 'failed',
+                    amhAttachment: null,
+                    amhReason: '',
+                    amhNotes: ''
+                });
+            }
+        }
+        
+        // ===== TABLE RENDERING =====
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const persona = personas[currentPersona];
+            tbody.innerHTML = '';
+            
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+            
+            // Render only the current page data
+            pageData.forEach(row => {
+                const tr = document.createElement('tr');
+                if (selectedRows.has(row.id)) {
+                    tr.classList.add('selected');
+                }
+                
+                // Checkbox
+                tr.innerHTML = `
+                    <td style="text-align: center;">
+                        <input type="checkbox" 
+                               class="checkbox-input" 
+                               ${persona.canEdit ? '' : 'disabled'}
+                               ${selectedRows.has(row.id) ? 'checked' : ''}
+                               onchange="toggleRowSelection(${row.id})">
+                    </td>
+                    <td><span class="employee-id">${row.employeeId}</span></td>
+                    <td><span class="time-value">${row.scheduleIn}</span></td>
+                    <td><span class="time-value">${row.scheduleOut}</span></td>
+                    <td><span class="time-value">${row.clockedIn}</span></td>
+                    <td><span class="time-value">${row.clockedOut}</span></td>
+                    <td>
+                        <select class="excused-select excused-${row.excused === 'Yes' ? 'yes' : row.excused === 'No' ? 'no' : 'empty'}"
+                                ${persona.canEditExcused ? '' : 'disabled'}
+                                onchange="updateField(${row.id}, 'excused', this.value)">
+                            <option value="">— Select —</option>
+                            <option value="Yes" ${row.excused === 'Yes' ? 'selected' : ''}>Yes</option>
+                            <option value="No" ${row.excused === 'No' ? 'selected' : ''}>No</option>
+                        </select>
+                    </td>
+                    <td>
+                        <textarea class="comment-textarea"
+                                  id="comment-${row.id}"
+                                  maxlength="500"
+                                  ${persona.canEditComment ? '' : 'disabled'}
+                                  placeholder="${persona.canEditComment ? 'Enter comment (max 500 chars)...' : 'Read only'}"
+                                  onkeyup="updateField(${row.id}, 'comment', this.value); updateCharCount(${row.id})">${row.comment}</textarea>
+                        <div class="char-count" id="charCount-${row.id}">${row.comment ? row.comment.length : 0} / 500</div>
+                        ${persona.showAMH ? renderAMHSection(row) : ''}
+                    </td>
+                    <td>
+                        <span class="kronos-badge kronos-${row.kronosStatus}">
+                            ${row.kronosStatus === 'success' ? '🟢 Success' : 
+                              row.kronosStatus === 'pending' ? '🟡 Pending' : '🔴 Failed'}
+                        </span>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function renderAMHSection(row) {
+            const hasReasonAndFile = row.amhReason && row.amhAttachment;
+            
+            return `
+                <div class="amh-section">
+                    <div class="amh-header">
+                        <div class="amh-title">
+                            <span>🔐</span>
+                            <span>AMH Authorization</span>
+                        </div>
+                        <div class="amh-badge ${hasReasonAndFile ? 'complete' : ''}">
+                            ${hasReasonAndFile ? '✓ Complete' : '⚠ Required'}
+                        </div>
+                    </div>
+                    
+                    <!-- Original Comment Display -->
+                    <div class="amh-field">
+                        <div class="amh-field-label">
+                            <span class="amh-field-label-text">SM's Original Comment</span>
+                            <span class="optional-tag">Reference</span>
+                        </div>
+                        <div class="amh-context">
+                            <div class="amh-context-label">Site Manager wrote:</div>
+                            <div class="amh-context-text">${row.comment || 'No comment provided'}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Authorization Reason -->
+                    <div class="amh-field">
+                        <div class="amh-field-label">
+                            <span class="amh-field-label-text">Authorization Reason<span class="required-star">*</span></span>
+                        </div>
+                        <textarea class="amh-textarea"
+                                  id="amhReason-${row.id}"
+                                  placeholder="Why are you acting on behalf? (e.g., 'Covering for SM - On leave')"
+                                  onkeyup="updateField(${row.id}, 'amhReason', this.value)">${row.amhReason}</textarea>
+                        <div class="amh-hint">Provide clear justification - this is audited for compliance</div>
+                    </div>
+                    
+                    <!-- File Upload -->
+                    <div class="amh-field">
+                        <div class="amh-field-label">
+                            <span class="amh-field-label-text">Supporting Document<span class="required-star">*</span></span>
+                        </div>
+                        <div class="amh-upload-area ${row.amhAttachment ? 'has-file' : ''}" 
+                             id="uploadArea-${row.id}"
+                             onclick="document.getElementById('fileInput-${row.id}').click()">
+                            <div class="amh-upload-icon">${row.amhAttachment ? '✓' : '📎'}</div>
+                            <div class="amh-upload-text">${row.amhAttachment ? 'File Uploaded' : 'Click to Upload'}</div>
+                            <div class="amh-upload-hint">${row.amhAttachment ? row.amhAttachment : 'PDF, DOC, DOCX, JPG, PNG (Max 10MB)'}</div>
+                        </div>
+                        <input type="file" 
+                               id="fileInput-${row.id}" 
+                               style="display: none;"
+                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                               onchange="handleFileUpload(${row.id}, this)">
+                        ${row.amhAttachment ? `
+                        <div class="amh-file-display show">
+                            <span class="amh-file-name">📄 ${row.amhAttachment}</span>
+                            <button class="amh-remove-btn" onclick="removeFile(${row.id}); event.stopPropagation();">Remove</button>
+                        </div>
+                        ` : ''}
+                        <div class="amh-hint">🔒 Files encrypted and retained 90+ days for compliance</div>
+                    </div>
+                    
+                    <!-- Additional Notes -->
+                    <div class="amh-field">
+                        <div class="amh-field-label">
+                            <span class="amh-field-label-text">Additional Notes</span>
+                            <span class="optional-tag">Optional</span>
+                        </div>
+                        <textarea class="amh-textarea"
+                                  style="min-height: 60px;"
+                                  placeholder="Any additional context or information..."
+                                  onkeyup="updateField(${row.id}, 'amhNotes', this.value)">${row.amhNotes}</textarea>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ===== FIELD UPDATES =====
+        function updateField(rowId, field, value) {
+            const row = gridData.find(r => r.id === rowId);
+            if (row) {
+                row[field] = value;
+                
+                // Clear validation error when user edits the field
+                if (event && event.target) {
+                    event.target.classList.remove('validation-error');
+                }
+                
+                // Update excused dropdown color
+                if (field === 'excused') {
+                    const select = event.target;
+                    select.className = 'excused-select';
+                    if (value === 'Yes') select.classList.add('excused-yes');
+                    else if (value === 'No') select.classList.add('excused-no');
+                    else select.classList.add('excused-empty');
+                    
+                    updateStats();
+                }
+                
+                // Update AMH badge if needed
+                if ((field === 'amhReason' || field === 'amhAttachment') && personas[currentPersona].showAMH) {
+                    updateAMHBadge(rowId);
+                }
+            }
+        }
+        
+        function updateCharCount(rowId) {
+            const textarea = document.getElementById(`comment-${rowId}`);
+            const counter = document.getElementById(`charCount-${rowId}`);
+            if (textarea && counter) {
+                const length = textarea.value.length;
+                counter.textContent = `${length} / 500`;
+                
+                // Update color based on length
+                counter.className = 'char-count';
+                if (length > 450) counter.classList.add('error');
+                else if (length > 400) counter.classList.add('warning');
+            }
+        }
+        
+        function updateAMHBadge(rowId) {
+            const row = gridData.find(r => r.id === rowId);
+            if (row) {
+                const badge = document.querySelector(`#tableBody tr:nth-child(${rowId + 1}) .amh-badge`);
+                if (badge) {
+                    const isComplete = row.amhReason && row.amhAttachment;
+                    badge.className = `amh-badge ${isComplete ? 'complete' : ''}`;
+                    badge.textContent = isComplete ? '✓ Complete' : '⚠ Required';
+                }
+            }
+        }
+        
+        // ===== FILE UPLOAD =====
+        function handleFileUpload(rowId, input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // Validate size
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('File too large. Maximum size is 10MB', 'error');
+                input.value = '';
+                return;
+            }
+            
+            const row = gridData.find(r => r.id === rowId);
+            if (row) {
+                row.amhAttachment = file.name;
+                
+                // Clear validation error on upload area
+                const uploadArea = document.getElementById(`uploadArea-${rowId}`);
+                if (uploadArea) uploadArea.classList.remove('validation-error');
+                
+                renderTable();
+                showToast('File uploaded successfully', 'success');
+            }
+        }
+        
+        function removeFile(rowId) {
+            const row = gridData.find(r => r.id === rowId);
+            if (row) {
+                row.amhAttachment = null;
+                const fileInput = document.getElementById(`fileInput-${rowId}`);
+                if (fileInput) fileInput.value = '';
+                renderTable();
+                showToast('File removed', 'info');
+            }
+        }
+        
+        // ===== SELECTION MANAGEMENT =====
+        function toggleRowSelection(rowId) {
+            if (selectedRows.has(rowId)) {
+                selectedRows.delete(rowId);
+            } else {
+                selectedRows.add(rowId);
+            }
+            renderTable();
+            updateActionButtons();
+        }
+        
+        function toggleSelectAll() {
+            const persona = personas[currentPersona];
+            if (!persona.canEdit) return;
+            
+            const checkbox = document.getElementById('selectAllCheckbox');
+            if (checkbox.checked) {
+                gridData.forEach(row => selectedRows.add(row.id));
+            } else {
+                selectedRows.clear();
+            }
+            renderTable();
+            updateActionButtons();
+        }
+        
+        function selectAll() {
+            const persona = personas[currentPersona];
+            if (!persona.canEdit) return;
+            
+            gridData.forEach(row => selectedRows.add(row.id));
+            document.getElementById('selectAllCheckbox').checked = true;
+            renderTable();
+            updateActionButtons();
+        }
+        
+        function updateActionButtons() {
+            const approveBtn = document.getElementById('approveBtn');
+            const bulkExcusedBtn = document.getElementById('bulkExcusedBtn');
+            const bulkCommentBtn = document.getElementById('bulkCommentBtn');
+            
+            const hasSelection = selectedRows.size > 0;
+            const canEdit = personas[currentPersona].canEdit;
+            
+            approveBtn.disabled = !hasSelection || !canEdit;
+            bulkExcusedBtn.disabled = !hasSelection || !canEdit;
+            bulkCommentBtn.disabled = !hasSelection || !canEdit;
+        }
+        
+        // ===== VALIDATION =====
+        function validateSelection() {
+            const errors = [];
+            const persona = personas[currentPersona];
+            
+            // Clear all previous error highlights
+            clearValidationErrors();
+            
+            selectedRows.forEach(rowId => {
+                const row = gridData.find(r => r.id === rowId);
+                if (row) {
+                    // Excused is mandatory for Late In
+                    if (!row.excused) {
+                        errors.push(`${row.employeeId}: Excused field is required (must select Yes or No)`);
+                        highlightError(rowId, 'excused');
+                    }
+                    
+                    // Comment is mandatory for Late In (when variance > 0)
+                    if (row.variance > 0 && (!row.comment || !row.comment.trim())) {
+                        errors.push(`${row.employeeId}: Comment is mandatory for Late In exceptions`);
+                        highlightError(rowId, 'comment');
+                    }
+                    
+                    // Comment character limit (500 chars)
+                    if (row.comment && row.comment.length > 500) {
+                        errors.push(`${row.employeeId}: Comment exceeds 500 character limit (${row.comment.length} chars)`);
+                        highlightError(rowId, 'comment');
+                    }
+                    
+                    // AMH specific validations
+                    if (persona.showAMH) {
+                        if (!row.amhReason || !row.amhReason.trim()) {
+                            errors.push(`${row.employeeId}: AMH authorization reason is required`);
+                            highlightError(rowId, 'amhReason');
+                        }
+                        if (!row.amhAttachment) {
+                            errors.push(`${row.employeeId}: AMH supporting document must be uploaded`);
+                            highlightError(rowId, 'amhAttachment');
+                        }
+                    }
+                }
+            });
+            
+            if (errors.length > 0) {
+                const banner = document.getElementById('validationBanner');
+                const list = document.getElementById('validationList');
+                list.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
+                banner.classList.add('show');
+                banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            } else {
+                document.getElementById('validationBanner').classList.remove('show');
+                return true;
+            }
+        }
+        
+        function highlightError(rowId, fieldType) {
+            // Find the row index in the current page
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const pageData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+            const rowIndex = pageData.findIndex(r => r.id === rowId);
+            
+            if (rowIndex === -1) return; // Row not on current page
+            
+            const rowElement = document.querySelector(`#tableBody tr:nth-child(${rowIndex + 1})`);
+            if (!rowElement) return;
+            
+            if (fieldType === 'excused') {
+                const select = rowElement.querySelector('.excused-select');
+                if (select) select.classList.add('validation-error');
+            } else if (fieldType === 'comment') {
+                const textarea = rowElement.querySelector('.comment-textarea');
+                if (textarea) textarea.classList.add('validation-error');
+            } else if (fieldType === 'amhReason') {
+                const textarea = rowElement.querySelector(`#amhReason-${rowId}`);
+                if (textarea) textarea.classList.add('validation-error');
+            } else if (fieldType === 'amhAttachment') {
+                const uploadArea = rowElement.querySelector(`#uploadArea-${rowId}`);
+                if (uploadArea) uploadArea.classList.add('validation-error');
+            }
+        }
+        
+        function clearValidationErrors() {
+            // Remove all validation error classes
+            document.querySelectorAll('.validation-error').forEach(el => {
+                el.classList.remove('validation-error');
+            });
+        }
+        
+        // ===== APPROVE ACTION =====
+        function approveSelected() {
+            if (!validateSelection()) {
+                showToast('Please fix validation errors', 'error');
+                return;
+            }
+            
+            const count = selectedRows.size;
+            if (!confirm(`Approve ${count} selected record(s)?`)) {
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                // Process approvals
+                selectedRows.forEach(rowId => {
+                    const row = gridData.find(r => r.id === rowId);
+                    if (row) {
+                        // Simulate Kronos write
+                        row.kronosStatus = Math.random() > 0.3 ? 'success' : 'failed';
+                    }
+                });
+                
+                selectedRows.clear();
+                document.getElementById('selectAllCheckbox').checked = false;
+                renderTable();
+                updateActionButtons();
+                updateStats();
+                hideLoading();
+                
+                showToast(`${count} record(s) approved and sent to Kronos`, 'success');
+            }, 2000);
+        }
+        
+        // ===== STATS =====
+        function updateStats() {
+            const pending = gridData.filter(r => !r.excused).length;
+            const excused = gridData.filter(r => r.excused === 'Yes').length;
+            const unexcused = gridData.filter(r => r.excused === 'No').length;
+            
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statExcused').textContent = excused;
+            document.getElementById('statUnexcused').textContent = unexcused;
+        }
+        
+        // ===== FILTERS =====
+        function applyFilters() {
+            showLoading();
+            setTimeout(() => {
+                // Apply filters (in real app, this would filter the data)
+                filteredData = [...gridData]; // For now, just copy all data
+                currentPage = 1; // Reset to first page when filters change
+                renderTable();
+                updatePagination();
+                hideLoading();
+                showToast('Filters applied successfully', 'success');
+            }, 1000);
+        }
+        
+        function resetFilters() {
+            document.getElementById('stationSelect').selectedIndex = 0;
+            document.getElementById('customerSelect').selectedIndex = 0;
+            document.getElementById('losSelect').selectedIndex = 0;
+            document.getElementById('jobSelect').selectedIndex = 0;
+            selectDateOption('yesterday');
+            filteredData = [...gridData];
+            currentPage = 1;
+            renderTable();
+            updatePagination();
+            showToast('Filters reset to default', 'info');
+        }
+        
+        // ===== PAGINATION =====
+        function updatePagination() {
+            const totalRecords = filteredData.length;
+            totalPagesCount = Math.ceil(totalRecords / rowsPerPage);
+            
+            // Update info display
+            document.getElementById('totalRecords').textContent = totalRecords;
+            document.getElementById('currentPageDisplay').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPagesCount;
+            
+            // Update button states
+            document.getElementById('firstPageBtn').disabled = currentPage === 1;
+            document.getElementById('prevPageBtn').disabled = currentPage === 1;
+            document.getElementById('nextPageBtn').disabled = currentPage === totalPagesCount;
+            document.getElementById('lastPageBtn').disabled = currentPage === totalPagesCount;
+            
+            // Render page numbers
+            renderPageNumbers();
+        }
+        
+        function renderPageNumbers() {
+            const pageNumbersDiv = document.getElementById('pageNumbers');
+            pageNumbersDiv.innerHTML = '';
+            
+            // Show max 7 page numbers with ellipsis
+            const maxVisible = 7;
+            let startPage = Math.max(1, currentPage - 3);
+            let endPage = Math.min(totalPagesCount, startPage + maxVisible - 1);
+            
+            // Adjust start if we're near the end
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+            
+            // First page + ellipsis
+            if (startPage > 1) {
+                addPageNumber(1);
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-ellipsis';
+                    ellipsis.textContent = '...';
+                    pageNumbersDiv.appendChild(ellipsis);
+                }
+            }
+            
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                addPageNumber(i);
+            }
+            
+            // Ellipsis + last page
+            if (endPage < totalPagesCount) {
+                if (endPage < totalPagesCount - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-ellipsis';
+                    ellipsis.textContent = '...';
+                    pageNumbersDiv.appendChild(ellipsis);
+                }
+                addPageNumber(totalPagesCount);
+            }
+        }
+        
+        function addPageNumber(pageNum) {
+            const pageNumbersDiv = document.getElementById('pageNumbers');
+            const pageBtn = document.createElement('button');
+            pageBtn.className = 'page-number' + (pageNum === currentPage ? ' active' : '');
+            pageBtn.textContent = pageNum;
+            pageBtn.onclick = () => goToPage(pageNum);
+            pageNumbersDiv.appendChild(pageBtn);
+        }
+        
+        function goToPage(page) {
+            if (page < 1 || page > totalPagesCount || page === currentPage) return;
+            
+            currentPage = page;
+            renderTable();
+            updatePagination();
+            
+            // Scroll to top of table
+            document.querySelector('.table-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function changeRowsPerPage() {
+            const select = document.getElementById('rowsPerPageSelect');
+            rowsPerPage = parseInt(select.value);
+            currentPage = 1; // Reset to first page
+            renderTable();
+            updatePagination();
+            showToast(`Showing ${rowsPerPage} rows per page`, 'info');
+        }
+        
+        // ===== SORTING =====
+        function sortTable(column) {
+            // Toggle direction if same column, otherwise reset to ascending
+            if (currentSortColumn === column) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = column;
+                currentSortDirection = 'asc';
+            }
+            
+            // Sort the filtered data
+            filteredData.sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+                
+                // Handle empty values
+                if (!aVal && !bVal) return 0;
+                if (!aVal) return 1;
+                if (!bVal) return -1;
+                
+                // Compare values
+                if (aVal < bVal) return currentSortDirection === 'asc' ? -1 : 1;
+                if (aVal > bVal) return currentSortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            // Update sort indicators
+            document.querySelectorAll('[id^="sort-"]').forEach(el => {
+                el.textContent = '⇅';
+            });
+            const indicator = document.getElementById(`sort-${column}`);
+            if (indicator) {
+                indicator.textContent = currentSortDirection === 'asc' ? '↑' : '↓';
+            }
+            
+            // Re-render table
+            renderTable();
+            updatePagination();
+            showToast(`Sorted by ${column} (${currentSortDirection})`, 'info');
+        }
+        
+        // ===== REFRESH =====
+        function refreshGrid() {
+            showLoading();
+            setTimeout(() => {
+                // In real app, this would fetch fresh data from server
+                applyFilters(); // Reapply current filters
+                hideLoading();
+                showToast('Grid refreshed successfully', 'success');
+            }, 1000);
+        }
+        
+        // ===== BULK ACTIONS =====
+        function showBulkExcusedModal() {
+            const count = selectedRows.size;
+            document.getElementById('bulkExcusedCount').textContent = count;
+            document.getElementById('bulkExcusedValue').value = '';
+            document.getElementById('bulkExcusedModal').classList.add('show');
+        }
+        
+        function closeBulkExcusedModal() {
+            document.getElementById('bulkExcusedModal').classList.remove('show');
+        }
+        
+        function applyBulkExcused() {
+            const value = document.getElementById('bulkExcusedValue').value;
+            
+            if (!value) {
+                showToast('Please select an Excused status', 'error');
+                return;
+            }
+            
+            let successCount = 0;
+            let failureCount = 0;
+            
+            selectedRows.forEach(rowId => {
+                const row = gridData.find(r => r.id === rowId);
+                if (row) {
+                    row.excused = value;
+                    successCount++;
+                } else {
+                    failureCount++;
+                }
+            });
+            
+            closeBulkExcusedModal();
+            renderTable();
+            updateStats();
+            
+            if (failureCount === 0) {
+                showToast(`Excused status updated for ${successCount} record(s)`, 'success');
+            } else {
+                showToast(`Updated ${successCount} record(s), ${failureCount} failed`, 'error');
+            }
+        }
+        
+        function showBulkCommentModal() {
+            const count = selectedRows.size;
+            document.getElementById('bulkCommentCount').textContent = count;
+            document.getElementById('bulkCommentValue').value = '';
+            document.getElementById('bulkCharCount').textContent = '0 / 500';
+            document.getElementById('bulkCommentModal').classList.add('show');
+            
+            // Add character counter
+            const textarea = document.getElementById('bulkCommentValue');
+            textarea.oninput = function() {
+                const length = this.value.length;
+                const counter = document.getElementById('bulkCharCount');
+                counter.textContent = `${length} / 500`;
+                counter.className = 'char-count';
+                if (length > 450) counter.classList.add('error');
+                else if (length > 400) counter.classList.add('warning');
+            };
+        }
+        
+        function closeBulkCommentModal() {
+            document.getElementById('bulkCommentModal').classList.remove('show');
+        }
+        
+        function applyBulkComment() {
+            const value = document.getElementById('bulkCommentValue').value;
+            
+            if (!value || !value.trim()) {
+                showToast('Please enter a comment', 'error');
+                return;
+            }
+            
+            if (value.length > 500) {
+                showToast('Comment exceeds 500 character limit', 'error');
+                return;
+            }
+            
+            let successCount = 0;
+            let failureCount = 0;
+            
+            selectedRows.forEach(rowId => {
+                const row = gridData.find(r => r.id === rowId);
+                if (row) {
+                    row.comment = value;
+                    successCount++;
+                } else {
+                    failureCount++;
+                }
+            });
+            
+            closeBulkCommentModal();
+            renderTable();
+            
+            if (failureCount === 0) {
+                showToast(`Comment applied to ${successCount} record(s)`, 'success');
+            } else {
+                showToast(`Applied to ${successCount} record(s), ${failureCount} failed`, 'error');
+            }
+        }
+        
+        // ===== UI UTILITIES =====
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+            
+            const icons = {
+                success: '✓',
+                error: '✗',
+                info: 'ℹ️'
+            };
+            
+            icon.textContent = icons[type] || icons.info;
+            msg.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

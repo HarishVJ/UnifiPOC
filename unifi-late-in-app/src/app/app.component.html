@@ -1,0 +1,464 @@
+<!-- Login Screen -->
+<div class="login-screen" *ngIf="showLogin">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-circle">iL</div>
+      <h1>iLink Attendance System</h1>
+      <p>Late In Exception Management</p>
+    </div>
+    
+    <button class="azure-btn" (click)="login()">
+      <span>🔐</span>
+      <span>Sign in with Azure AD</span>
+    </button>
+    
+    <div class="demo-notice">
+      <strong>📺 Demo Mode</strong>
+      <p>After login, you can switch between different user roles (SM, AMH, Operations, Admin) using the role selector.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Main Application -->
+<div class="app-container" *ngIf="!showLogin">
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="app-logo">iL</div>
+        <div class="header-title">
+          <h1>iLink Attendance System</h1>
+          <p>Late In Exception Management</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-badge">
+          <div class="user-avatar">{{ currentPersona.avatar }}</div>
+          <div class="user-info">
+            <div class="user-name">{{ currentPersona.name }}</div>
+            <div class="user-role">{{ currentPersona.role }}</div>
+          </div>
+        </div>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-top">
+        <div class="page-title">
+          <div class="page-icon">⏰</div>
+          <div class="page-title-text">
+            <h2>Late In Management</h2>
+            <p>Review and process employee late arrival exceptions</p>
+          </div>
+        </div>
+        <div class="demo-selector">
+          <label>🎭 Demo Role:</label>
+          <select [(ngModel)]="currentPersona.id" (change)="changePersona($any($event.target).value)">
+            <option *ngFor="let persona of personas" [value]="persona.id">
+              {{ persona.role }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <div class="filters-title">
+        <span>🔍</span>
+        <span>Filters</span>
+      </div>
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Station</label>
+          <select class="filter-select" [(ngModel)]="filters.station">
+            <option *ngFor="let station of stations" [value]="station">{{ station }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Customer</label>
+          <select class="filter-select" [(ngModel)]="filters.customer">
+            <option *ngFor="let customer of customers" [value]="customer">{{ customer }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Line of Service</label>
+          <select class="filter-select" [(ngModel)]="filters.lineOfService">
+            <option *ngFor="let los of lineOfServices" [value]="los">{{ los }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Job Code</label>
+          <select class="filter-select" [(ngModel)]="filters.jobCode">
+            <option *ngFor="let job of jobCodes" [value]="job">{{ job }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Excused Status</label>
+          <select class="filter-select" [(ngModel)]="filters.excusedStatus">
+            <option value="">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Pending">Pending (Empty)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Date Range</label>
+          <div class="date-picker-wrapper">
+            <div class="date-picker-display" [class.active]="showDatePicker" (click)="toggleDatePicker()">
+              <span>{{ getDateLabel() }}</span>
+              <span>▼</span>
+            </div>
+            <div class="date-picker-dropdown" [class.show]="showDatePicker">
+              <div class="date-option" [class.selected]="filters.dateRange === 'yesterday'" (click)="selectDateOption('yesterday')">
+                <span class="date-option-label">Yesterday</span>
+              </div>
+              <div class="date-option" (click)="selectDateOption('2days')">
+                <span class="date-option-label">2 Days Ago</span>
+              </div>
+              <div class="date-option" (click)="selectDateOption('3days')">
+                <span class="date-option-label">3 Days Ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-primary" (click)="applyFilters()">
+          <span>✓</span>
+          <span>Apply Filters</span>
+        </button>
+        <button class="btn btn-secondary" (click)="resetFilters()">
+          <span>↻</span>
+          <span>Reset</span>
+        </button>
+        <button class="btn btn-secondary" (click)="refreshGrid()">
+          <span>🔄</span>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-icon pending">⏳</div>
+        <div class="stat-content">
+          <h3>{{ stats.pending }}</h3>
+          <p>Pending Review</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon excused">✓</div>
+        <div class="stat-content">
+          <h3>{{ stats.excused }}</h3>
+          <p>Excused</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon unexcused">✗</div>
+        <div class="stat-content">
+          <h3>{{ stats.unexcused }}</h3>
+          <p>Unexcused</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Validation Banner -->
+    <div class="validation-banner" *ngIf="showValidationBanner">
+      <h4>
+        <span>⚠️</span>
+        <span>Please correct the following errors:</span>
+      </h4>
+      <ul class="validation-list">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+    
+    <!-- Data Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <div class="table-title">Late Arrival Records</div>
+        <div class="table-actions">
+          <button class="btn btn-sm btn-secondary" (click)="selectAll()" [disabled]="!currentPersona.canEdit">
+            <span>☑️</span>
+            <span>Select All</span>
+          </button>
+          <button class="btn btn-sm btn-secondary" (click)="openBulkExcusedModal()" [disabled]="selectedRows.size === 0 || !currentPersona.canEdit">
+            <span>📝</span>
+            <span>Bulk Excused</span>
+          </button>
+          <button class="btn btn-sm btn-secondary" (click)="openBulkCommentModal()" [disabled]="selectedRows.size === 0 || !currentPersona.canEdit">
+            <span>💬</span>
+            <span>Bulk Comment</span>
+          </button>
+          <button class="btn btn-sm btn-success" (click)="approveSelected()" [disabled]="selectedRows.size === 0 || !currentPersona.canEdit">
+            <span>✓</span>
+            <span>Approve Selected</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="checkbox-col">
+                <input type="checkbox" 
+                       [checked]="selectedRows.size === records.length && records.length > 0"
+                       (change)="toggleSelectAll()">
+              </th>
+              <th (click)="sortTable('employeeId')" class="sortable">
+                Employee ID <span>{{ getSortIcon('employeeId') }}</span>
+              </th>
+              <th (click)="sortTable('scheduleIn')" class="sortable">
+                Schedule In <span>{{ getSortIcon('scheduleIn') }}</span>
+              </th>
+              <th (click)="sortTable('scheduleOut')" class="sortable">
+                Schedule Out <span>{{ getSortIcon('scheduleOut') }}</span>
+              </th>
+              <th (click)="sortTable('clockedIn')" class="sortable">
+                Clocked In <span>{{ getSortIcon('clockedIn') }}</span>
+              </th>
+              <th (click)="sortTable('clockedOut')" class="sortable">
+                Clocked Out <span>{{ getSortIcon('clockedOut') }}</span>
+              </th>
+              <th (click)="sortTable('excused')" class="sortable">
+                Excused (Y/N) <span class="required">*</span> <span>{{ getSortIcon('excused') }}</span>
+              </th>
+              <th>Comment</th>
+              <th>Kronos Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of records" [class.selected]="selectedRows.has(record.id)">
+              <td class="text-center">
+                <input type="checkbox"
+                       [checked]="selectedRows.has(record.id)"
+                       [disabled]="!currentPersona.canEdit"
+                       (change)="toggleRowSelection(record.id)">
+              </td>
+              <td><span class="employee-id">{{ record.employeeId }}</span></td>
+              <td><span class="time-value">{{ record.scheduleIn }}</span></td>
+              <td><span class="time-value">{{ record.scheduleOut }}</span></td>
+              <td><span class="time-value">{{ record.clockedIn }}</span></td>
+              <td><span class="time-value">{{ record.clockedOut }}</span></td>
+              <td>
+                <select class="excused-select" 
+                        [ngClass]="[getExcusedClass(record.excused), hasError(record.id, 'excused') ? 'validation-error' : '']"
+                        [disabled]="!currentPersona.canEditExcused"
+                        [(ngModel)]="record.excused"
+                        (change)="updateField(record.id, 'excused', record.excused)">
+                  <option value="">— Select —</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </td>
+              <td>
+                <textarea class="comment-textarea"
+                          [ngClass]="hasError(record.id, 'comment') ? 'validation-error' : ''"
+                          [disabled]="!currentPersona.canEditComment"
+                          maxlength="500"
+                          [(ngModel)]="record.comment"
+                          (input)="updateField(record.id, 'comment', record.comment)"
+                          placeholder="Enter comment (max 500 chars)..."></textarea>
+                <div class="char-count" [ngClass]="getCharCountClass(record.comment)">
+                  {{ getCharCount(record.comment) }}
+                </div>
+                
+                <!-- AMH Section -->
+                <div class="amh-section" *ngIf="currentPersona.showAMH">
+                  <div class="amh-header">
+                    <div class="amh-title">
+                      <span>🔐</span>
+                      <span>AMH Authorization</span>
+                    </div>
+                    <div class="amh-badge" [class.complete]="record.amhReason && record.amhAttachment">
+                      {{ (record.amhReason && record.amhAttachment) ? '✓ Complete' : '⚠ Required' }}
+                    </div>
+                  </div>
+                  
+                  <div class="amh-field">
+                    <div class="amh-field-label">
+                      <span class="amh-field-label-text">SM's Original Comment</span>
+                      <span class="optional-tag">Reference</span>
+                    </div>
+                    <div class="amh-context">
+                      <div class="amh-context-label">Site Manager wrote:</div>
+                      <div class="amh-context-text">{{ record.comment || 'No comment provided' }}</div>
+                    </div>
+                  </div>
+                  
+                  <div class="amh-field">
+                    <div class="amh-field-label">
+                      <span class="amh-field-label-text">Authorization Reason<span class="required-star">*</span></span>
+                    </div>
+                    <textarea class="amh-textarea"
+                              [ngClass]="hasError(record.id, 'amhReason') ? 'validation-error' : ''"
+                              [(ngModel)]="record.amhReason"
+                              (input)="updateField(record.id, 'amhReason', record.amhReason)"
+                              placeholder="Why are you acting on behalf? (e.g., 'Covering for SM - On leave')"></textarea>
+                    <div class="amh-hint">Provide clear justification - this is audited for compliance</div>
+                  </div>
+                  
+                  <div class="amh-field">
+                    <div class="amh-field-label">
+                      <span class="amh-field-label-text">Supporting Document<span class="required-star">*</span></span>
+                    </div>
+                    <div class="amh-upload-area" 
+                         [ngClass]="[record.amhAttachment ? 'has-file' : '', hasError(record.id, 'amhAttachment') ? 'validation-error' : '']"
+                         (click)="fileInput.click()">
+                      <div class="amh-upload-icon">{{ record.amhAttachment ? '✓' : '📎' }}</div>
+                      <div class="amh-upload-text">{{ record.amhAttachment ? 'File Uploaded' : 'Click to Upload' }}</div>
+                      <div class="amh-upload-hint">{{ record.amhAttachment || 'PDF, DOC, DOCX, JPG, PNG (Max 10MB)' }}</div>
+                    </div>
+                    <input #fileInput type="file" style="display: none;"
+                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                           (change)="handleFileUpload($event, record.id)">
+                    <div class="amh-file-display" *ngIf="record.amhAttachment" [class.show]="record.amhAttachment">
+                      <span class="amh-file-name">📄 {{ record.amhAttachment }}</span>
+                      <button class="amh-remove-btn" (click)="removeFile(record.id); $event.stopPropagation()">Remove</button>
+                    </div>
+                    <div class="amh-hint">🔒 Files encrypted and retained 90+ days for compliance</div>
+                  </div>
+                  
+                  <div class="amh-field">
+                    <div class="amh-field-label">
+                      <span class="amh-field-label-text">Additional Notes</span>
+                      <span class="optional-tag">Optional</span>
+                    </div>
+                    <textarea class="amh-textarea"
+                              style="min-height: 60px;"
+                              [(ngModel)]="record.amhNotes"
+                              (input)="updateField(record.id, 'amhNotes', record.amhNotes)"
+                              placeholder="Any additional context or information..."></textarea>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="kronos-badge" [ngClass]="'kronos-' + record.kronosStatus">
+                  {{ getKronosIcon(record.kronosStatus) }} {{ getKronosText(record.kronosStatus) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination-section">
+        <div class="pagination-info">
+          <div>
+            <strong>{{ pagination.totalRecords }}</strong> records, 
+            page <strong>{{ pagination.currentPage }}</strong> of <strong>{{ pagination.totalPages }}</strong>
+          </div>
+          <div class="rows-per-page">
+            <label>Rows per page:</label>
+            <select (change)="changeRowsPerPage($event)" [value]="pagination.rowsPerPage">
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+        <div class="pagination-controls">
+          <button class="page-btn" (click)="goToPage(1)" [disabled]="pagination.currentPage === 1">
+            <span>⟪</span>
+            <span>First</span>
+          </button>
+          <button class="page-btn" (click)="goToPage(pagination.currentPage - 1)" [disabled]="pagination.currentPage === 1">
+            <span>‹</span>
+            <span>Previous</span>
+          </button>
+          <div class="page-numbers">
+            <button *ngFor="let page of getPageNumbers()" 
+                    class="page-number"
+                    [class.active]="page === pagination.currentPage"
+                    (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          </div>
+          <button class="page-btn" (click)="goToPage(pagination.currentPage + 1)" [disabled]="pagination.currentPage === pagination.totalPages">
+            <span>Next</span>
+            <span>›</span>
+          </button>
+          <button class="page-btn" (click)="goToPage(pagination.totalPages)" [disabled]="pagination.currentPage === pagination.totalPages">
+            <span>Last</span>
+            <span>⟫</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Excused Modal -->
+<div class="modal-overlay" *ngIf="showBulkExcusedModal" (click)="closeBulkExcusedModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Bulk Update Excused Status</h3>
+      <button class="modal-close" (click)="closeBulkExcusedModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Apply Excused status to <strong>{{ selectedRows.size }}</strong> selected record(s):</p>
+      <div class="bulk-field">
+        <label class="bulk-label">Excused Status:</label>
+        <select class="bulk-select" [(ngModel)]="bulkExcusedValue">
+          <option value="">— Select —</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeBulkExcusedModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="applyBulkExcused()">Apply to Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Comment Modal -->
+<div class="modal-overlay" *ngIf="showBulkCommentModal" (click)="closeBulkCommentModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Bulk Update Comment</h3>
+      <button class="modal-close" (click)="closeBulkCommentModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Apply comment to <strong>{{ selectedRows.size }}</strong> selected record(s):</p>
+      <div class="bulk-field">
+        <label class="bulk-label">Comment:</label>
+        <textarea class="bulk-textarea" 
+                  [(ngModel)]="bulkCommentValue"
+                  maxlength="500" 
+                  placeholder="Enter comment (max 500 chars)..."></textarea>
+        <div class="char-count" [ngClass]="getBulkCharCountClass()">
+          {{ getBulkCharCount() }}
+        </div>
+      </div>
+      <div class="bulk-note">
+        <strong>Note:</strong> This comment will be applied to all selected records. Per-row success/failure summary will be shown after submission.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeBulkCommentModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="applyBulkComment()">Apply to Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" *ngIf="showLoading">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" [class.show]="showToast" [ngClass]="toastType">
+  <span class="toast-icon">{{ toastType === 'success' ? '✓' : toastType === 'error' ? '✗' : 'ℹ️' }}</span>
+  <span class="toast-message">{{ toastMessage }}</span>
+</div>

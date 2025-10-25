@@ -1,0 +1,149 @@
+<div class="late-in-grid-container">
+  <!-- Validation Banner -->
+  <div class="validation-banner" *ngIf="showValidationBanner">
+    <h4>
+      <span>⚠️</span>
+      <span>Please correct the following errors:</span>
+    </h4>
+    <ul class="validation-list">
+      <li *ngFor="let error of validationErrors">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-section">
+    <div class="table-header">
+      <div class="table-title">Late Arrival Records</div>
+      <div class="table-actions">
+        <button class="btn btn-sm btn-secondary" (click)="selectAll()" [disabled]="!currentPersona.canEdit">
+          <span>☑️</span>
+          <span>Select All</span>
+        </button>
+        <button class="btn btn-sm btn-success" (click)="approveSelected()" [disabled]="selectedRows.size === 0 || !currentPersona.canEdit">
+          <span>✓</span>
+          <span>Approve Selected</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="checkbox-col">
+              <input type="checkbox" 
+                     [checked]="selectedRows.size === records.length && records.length > 0"
+                     (change)="toggleSelectAll()">
+            </th>
+            <th (click)="sortTable('employeeId')" class="sortable">
+              Employee ID <span>{{ getSortIcon('employeeId') }}</span>
+            </th>
+            <th (click)="sortTable('scheduleIn')" class="sortable">
+              Schedule In <span>{{ getSortIcon('scheduleIn') }}</span>
+            </th>
+            <th (click)="sortTable('scheduleOut')" class="sortable">
+              Schedule Out <span>{{ getSortIcon('scheduleOut') }}</span>
+            </th>
+            <th (click)="sortTable('clockedIn')" class="sortable">
+              Clocked In <span>{{ getSortIcon('clockedIn') }}</span>
+            </th>
+            <th (click)="sortTable('clockedOut')" class="sortable">
+              Clocked Out <span>{{ getSortIcon('clockedOut') }}</span>
+            </th>
+            <th (click)="sortTable('excused')" class="sortable">
+              Excused (Y/N) <span class="required">*</span> <span>{{ getSortIcon('excused') }}</span>
+            </th>
+            <th>Comment</th>
+            <th>Kronos Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of records" [class.selected]="selectedRows.has(record.id)">
+            <td class="text-center">
+              <input type="checkbox"
+                     [checked]="selectedRows.has(record.id)"
+                     [disabled]="!currentPersona.canEdit"
+                     (change)="toggleRowSelection(record.id)">
+            </td>
+            <td><span class="employee-id">{{ record.employeeId }}</span></td>
+            <td><span class="time-value">{{ record.scheduleIn }}</span></td>
+            <td><span class="time-value">{{ record.scheduleOut }}</span></td>
+            <td><span class="time-value">{{ record.clockedIn }}</span></td>
+            <td><span class="time-value">{{ record.clockedOut }}</span></td>
+            <td>
+              <select class="excused-select" 
+                      [ngClass]="getExcusedClass(record.excused)"
+                      [disabled]="!currentPersona.canEditExcused"
+                      [(ngModel)]="record.excused"
+                      (change)="updateField(record.id, 'excused', record.excused)">
+                <option value="">— Select —</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </td>
+            <td>
+              <textarea class="comment-textarea"
+                        [disabled]="!currentPersona.canEditComment"
+                        maxlength="500"
+                        [(ngModel)]="record.comment"
+                        (input)="updateField(record.id, 'comment', record.comment)"
+                        placeholder="Enter comment (max 500 chars)..."></textarea>
+              <div class="char-count" [ngClass]="getCharCountClass(record.comment)">
+                {{ getCharCount(record.comment) }}
+              </div>
+            </td>
+            <td>
+              <span class="kronos-badge" [ngClass]="'kronos-' + record.kronosStatus">
+                {{ getKronosIcon(record.kronosStatus) }} {{ getKronosText(record.kronosStatus) }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section">
+      <div class="pagination-info">
+        <div>
+          <strong>{{ pagination.totalRecords }}</strong> records, 
+          page <strong>{{ pagination.currentPage }}</strong> of <strong>{{ pagination.totalPages }}</strong>
+        </div>
+        <div class="rows-per-page">
+          <label>Rows per page:</label>
+          <select (change)="changeRowsPerPage($event)" [value]="pagination.rowsPerPage">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+      <div class="pagination-controls">
+        <button class="page-btn" (click)="goToPage(1)" [disabled]="pagination.currentPage === 1">
+          <span>⟪</span>
+          <span>First</span>
+        </button>
+        <button class="page-btn" (click)="goToPage(pagination.currentPage - 1)" [disabled]="pagination.currentPage === 1">
+          <span>‹</span>
+          <span>Previous</span>
+        </button>
+        <div class="page-numbers">
+          <button *ngFor="let page of getPageNumbers()" 
+                  class="page-number"
+                  [class.active]="page === pagination.currentPage"
+                  (click)="goToPage(page)">
+            {{ page }}
+          </button>
+        </div>
+        <button class="page-btn" (click)="goToPage(pagination.currentPage + 1)" [disabled]="pagination.currentPage === pagination.totalPages">
+          <span>Next</span>
+          <span>›</span>
+        </button>
+        <button class="page-btn" (click)="goToPage(pagination.totalPages)" [disabled]="pagination.currentPage === pagination.totalPages">
+          <span>Last</span>
+          <span>⟫</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

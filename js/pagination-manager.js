@@ -79,6 +79,7 @@ const PaginationManager = {
         AppState.currentPage = page;
         TableRenderer.render();
         this.update();
+        SelectionManager.updateSelectAllButton();
         
         // Scroll to top of table
         document.querySelector('.table-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -103,6 +104,7 @@ const PaginationManager = {
         
         TableRenderer.render();
         this.update();
+        SelectionManager.updateSelectAllButton();
         UIUtils.showToast(`Showing ${AppState.rowsPerPage} rows per page`, 'info');
     }
 };

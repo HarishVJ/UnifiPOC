@@ -11,7 +11,7 @@
     <div class="login-container" id="loginScreen">
         <div class="login-card">
             <div class="login-logo">iL</div>
-            <h1>iLink Login</h1>
+            <h1>SSO Login</h1>
             <p>Late In Attendance Management System</p>
             
             <button class="azure-btn" onclick="AuthManager.login()">
@@ -28,22 +28,35 @@
     
     <!-- Main Application -->
     <div class="app-container" id="appContainer">
-        <!-- Header -->
+        <!-- Unified Header -->
         <div class="app-header">
             <div class="header-content">
                 <div class="header-left">
                     <div class="app-logo">iL</div>
                     <div class="header-title">
-                        <h1>iLink Attendance System</h1>
-                        <p>Late In Exception Management</p>
+                        <div class="header-title-main">
+                            <h1>iLink Unifi AI Project</h1>
+                            <span class="header-divider">|</span>
+                            <h2>⏰ Late In </h2>
+                        </div>
+                        <p>Review and process employee late arrival exceptions</p>
                     </div>
                 </div>
                 <div class="header-right">
+                    <div class="demo-selector">
+                        <label>🎭 Demo Role:</label>
+                        <select id="personaSelect" onchange="PersonaManager.changePersona()">
+                            <option value="sm">Station Manager (SM)</option>
+                            <option value="amh">Area Manager (AMH)</option>
+                            <option value="ops">Operations</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
                     <div class="user-badge">
                         <div class="user-avatar">JS</div>
                         <div class="user-info">
-                            <div class="user-name" id="userName">John Smith</div>
-                            <div class="user-role" id="userRole">Site Manager</div>
+                            <div class="user-name" id="userName">Welcome, John Smith</div>
+                            <div class="user-role" id="userRole">Station Manager</div>
                         </div>
                     </div>
                     <button class="logout-btn" onclick="AuthManager.logout()">Logout</button>
@@ -53,77 +66,51 @@
         
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Page Header -->
-            <div class="page-header">
-                <div class="page-header-top">
-                    <div class="page-title">
-                        <div class="page-icon">⏰</div>
-                        <div class="page-title-text">
-                            <h2>Late In Management</h2>
-                            <p>Review and process employee late arrival exceptions</p>
-                        </div>
-                    </div>
-                    <div class="demo-selector">
-                        <label>🎭 Demo Role:</label>
-                        <select id="personaSelect" onchange="PersonaManager.changePersona()">
-                            <option value="sm">Site Manager (SM)</option>
-                            <option value="amh">Area Manager (AMH)</option>
-                            <option value="ops">Operations</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Filters Section -->
             <div class="filters-section">
-                <div class="filters-title">
-                    <span>🔍</span>
-                    <span>Filters</span>
-                </div>
-                <div class="filters-grid">
-                    <div class="filter-group">
-                        <label class="filter-label">Station</label>
-                        <select class="filter-select" id="stationSelect">
+                <div class="filters-row">
+                    <div class="filter-group-compact">
+                        <label class="filter-label">🔍 Station</label>
+                        <select class="filter-select-compact" id="stationSelect">
                             <option>DTW - Detroit</option>
                             <option>ORD - Chicago</option>
                             <option>LAX - Los Angeles</option>
                         </select>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group-compact">
                         <label class="filter-label">Customer</label>
-                        <select class="filter-select" id="customerSelect">
+                        <select class="filter-select-compact" id="customerSelect">
                             <option>All Customers</option>
                             <option>Delta Airlines</option>
                             <option>United Airlines</option>
                         </select>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group-compact">
                         <label class="filter-label">Line of Service</label>
-                        <select class="filter-select" id="losSelect">
+                        <select class="filter-select-compact" id="losSelect">
                             <option>All Services</option>
                             <option>Cargo</option>
                             <option>Passenger</option>
                         </select>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group-compact">
                         <label class="filter-label">Job Code</label>
-                        <select class="filter-select" id="jobSelect">
+                        <select class="filter-select-compact" id="jobSelect">
                             <option>All Job Codes</option>
                             <option>Ramp Agent</option>
                             <option>Supervisor</option>
                         </select>
                     </div>
-                    <div class="filter-group">
-                        <label class="filter-label">Excused Status</label>
-                        <select class="filter-select" id="excusedFilter">
+                    <div class="filter-group-compact">
+                        <label class="filter-label">Excused</label>
+                        <select class="filter-select-compact" id="excusedFilter">
                             <option value="">All</option>
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
-                            <option value="Pending">Pending (Empty)</option>
+                            <option value="Pending">Empty</option>
                         </select>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group-compact">
                         <label class="filter-label">Date Range</label>
                         <div class="date-picker-wrapper">
                             <div class="date-picker-display" id="dateDisplay" onclick="DatePicker.toggle()">
@@ -131,7 +118,11 @@
                                 <span>▼</span>
                             </div>
                             <div class="date-picker-dropdown" id="dateDropdown">
-                                <div class="date-option selected" data-value="yesterday" onclick="DatePicker.selectOption('yesterday')">
+                                <div class="date-option selected" data-value="today" onclick="DatePicker.selectOption('today')">
+                                    <span class="date-option-label">Today</span>
+                                    <span class="date-option-date" id="todayDate"></span>
+                                </div>
+                                <div class="date-option" data-value="yesterday" onclick="DatePicker.selectOption('yesterday')">
                                     <span class="date-option-label">Yesterday</span>
                                     <span class="date-option-date" id="yesterdayDate"></span>
                                 </div>
@@ -144,54 +135,44 @@
                                     <span class="date-option-date" id="threeDaysDate"></span>
                                 </div>
                                 <div class="date-option custom">
-                                    <span class="date-option-label">Custom Range</span>
-                                    <div class="custom-range-inputs">
-                                        <input type="date" id="customStartDate">
-                                        <input type="date" id="customEndDate">
+                                    <span class="date-option-label">Custom Range (Max 31 days)</span>
+                                    <div class="unified-date-range">
+                                        <div class="date-range-input" id="dateRangeInput" onclick="DatePicker.toggleCalendar()">
+                                            <span class="date-range-icon">📅</span>
+                                            <span class="date-range-text" id="dateRangeText">Select date range...</span>
+                                        </div>
+                                        <div class="date-range-calendar" id="dateRangeCalendar" style="display: none;">
+                                            <div class="calendar-header">
+                                                <button class="calendar-nav" onclick="DatePicker.previousMonth()">‹</button>
+                                                <span class="calendar-month" id="calendarMonth">January 2025</span>
+                                                <button class="calendar-nav" onclick="DatePicker.nextMonth()">›</button>
+                                            </div>
+                                            <div class="calendar-weekdays">
+                                                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                                            </div>
+                                            <div class="calendar-days" id="calendarDays">
+                                                <!-- Days generated by JavaScript -->
+                                            </div>
+                                            <div class="calendar-footer">
+                                                <button class="calendar-clear" onclick="DatePicker.clearSelection()">Clear</button>
+                                                <button class="calendar-apply" onclick="DatePicker.applyCalendarRange()">Apply</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <button class="apply-custom-btn" onclick="DatePicker.applyCustomRange()">Apply</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="filter-actions">
-                    <button class="btn btn-primary" onclick="FilterManager.apply()">
-                        <span>✓</span>
-                        <span>Apply Filters</span>
-                    </button>
-                    <button class="btn btn-secondary" onclick="FilterManager.reset()">
-                        <span>↻</span>
-                        <span>Reset</span>
-                    </button>
-                    <button class="btn btn-secondary" onclick="GridManager.refresh()">
-                        <span>🔄</span>
-                        <span>Refresh</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Stats Cards -->
-            <div class="stats-section">
-                <div class="stat-card">
-                    <div class="stat-icon pending">⏳</div>
-                    <div class="stat-content">
-                        <h3 id="statPending">15</h3>
-                        <p>Pending Review</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon excused">✓</div>
-                    <div class="stat-content">
-                        <h3 id="statExcused">8</h3>
-                        <p>Excused</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon unexcused">✗</div>
-                    <div class="stat-content">
-                        <h3 id="statUnexcused">7</h3>
-                        <p>Unexcused</p>
+                    <div class="filter-actions-inline">
+                        <button class="btn btn-sm btn-primary" onclick="FilterManager.apply()" title="Apply Filters">
+                            <span>✓</span>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="FilterManager.reset()" title="Reset">
+                            <span>↻</span>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="GridManager.refresh()" title="Refresh">
+                            <span>🔄</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -208,19 +189,30 @@
             <!-- Data Table -->
             <div class="table-section">
                 <div class="table-header">
-                    <div class="table-title">Late Arrival Records</div>
+                    <div class="table-header-left">
+                        <div class="table-title">Late Arrival Records</div>
+                        <!-- Stats Bar Inline -->
+                        <div class="stats-bar-inline">
+                            <div class="stat-item stat-pending">
+                                <span class="stat-number" id="statPending">15</span>
+                                <span class="stat-label">Pending</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item stat-excused">
+                                <span class="stat-number" id="statExcused">8</span>
+                                <span class="stat-label">Excused</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item stat-unexcused">
+                                <span class="stat-number" id="statUnexcused">7</span>
+                                <span class="stat-label">Unexcused</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-actions">
-                        <button class="btn btn-sm btn-secondary" onclick="SelectionManager.selectAll()">
-                            <span>☑️</span>
-                            <span>Select All</span>
-                        </button>
-                        <button class="btn btn-sm btn-secondary" id="bulkExcusedBtn" onclick="BulkActions.showExcusedModal()" disabled>
+                        <button class="btn btn-sm btn-secondary" id="bulkUpdateBtn" onclick="BulkActions.showBulkUpdateModal()" disabled>
                             <span>📝</span>
-                            <span>Bulk Excused</span>
-                        </button>
-                        <button class="btn btn-sm btn-secondary" id="bulkCommentBtn" onclick="BulkActions.showCommentModal()" disabled>
-                            <span>💬</span>
-                            <span>Bulk Comment</span>
+                            <span>Bulk Update</span>
                         </button>
                         <button class="btn btn-sm btn-success" id="approveBtn" onclick="ApprovalManager.approveSelected()" disabled>
                             <span>✓</span>
@@ -228,12 +220,18 @@
                         </button>
                     </div>
                 </div>
+                
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th class="checkbox-col">
-                                    <input type="checkbox" class="checkbox-input" id="selectAllCheckbox" onchange="SelectionManager.toggleSelectAll()">
+                                    <div class="select-all-wrapper">
+                                        <button class="select-all-header-btn" id="selectAllBtn" onclick="SelectionManager.toggleSelectAllButton()" title="Select All">
+                                            <span id="selectAllIcon">☐</span>
+                                        </button>
+                                        <span class="selection-count-badge" id="selectionCountBadge">0</span>
+                                    </div>
                                 </th>
                                 <th onclick="SortManager.sort('employeeId')" style="cursor: pointer;">
                                     Employee ID <span id="sort-employeeId">⇅</span>
@@ -250,11 +248,31 @@
                                 <th onclick="SortManager.sort('clockedOut')" style="cursor: pointer;">
                                     Clocked Out <span id="sort-clockedOut">⇅</span>
                                 </th>
-                                <th onclick="SortManager.sort('excused')" style="cursor: pointer;">
-                                    Excused (Y/N) <span style="color: #e53e3e;">*</span> <span id="sort-excused">⇅</span>
+                                <th onclick="SortManager.sort('variance')" style="cursor: pointer;">
+                                    Variance (mins) <span id="sort-variance">⇅</span>
                                 </th>
-                                <th>Comment</th>
-                                <th>Kronos Status</th>
+                                <th onclick="SortManager.sort('excused')" style="cursor: pointer;">
+                                    Excused <span style="color: #e53e3e;">*</span> <span id="sort-excused">⇅</span>
+                                </th>
+                                <th>Comment <span style="color: #e53e3e;">*</span></th>
+                            </tr>
+                            <tr class="filter-row">
+                                <th></th>
+                                <th><input type="text" class="column-filter" id="filter-employeeId" placeholder="Filter..." onkeyup="ColumnFilter.apply()"></th>
+                                <th><input type="text" class="column-filter" id="filter-scheduleIn" placeholder="Filter..." onkeyup="ColumnFilter.apply()"></th>
+                                <th><input type="text" class="column-filter" id="filter-scheduleOut" placeholder="Filter..." onkeyup="ColumnFilter.apply()"></th>
+                                <th><input type="text" class="column-filter" id="filter-clockedIn" placeholder="Filter..." onkeyup="ColumnFilter.apply()"></th>
+                                <th><input type="text" class="column-filter" id="filter-clockedOut" placeholder="Filter..." onkeyup="ColumnFilter.apply()"></th>
+                                <th><input type="text" class="column-filter" id="filter-variance" placeholder="Filter..." onkeyup="ColumnFilter.apply()"></th>
+                                <th>
+                                    <select class="column-filter" id="filter-excused-col" onchange="ColumnFilter.apply()">
+                                        <option value="">All</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="__EMPTY__">Empty</option>
+                                    </select>
+                                </th>
+                                <th><input type="text" class="column-filter" id="filter-comment" placeholder="Filter..." onkeyup="ColumnFilter.apply()"></th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -314,52 +332,79 @@
         <span id="toastMessage"></span>
     </div>
     
-    <!-- Bulk Excused Modal -->
-    <div class="modal-overlay" id="bulkExcusedModal">
+    <!-- Bulk Update Modal (Combined Excused + Comment) -->
+    <div class="modal-overlay" id="bulkUpdateModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Bulk Update Excused Status</h3>
-                <button class="modal-close" onclick="BulkActions.closeExcusedModal()">✕</button>
+                <h3>Bulk Update Records</h3>
+                <button class="modal-close" onclick="BulkActions.closeBulkUpdateModal()">✕</button>
             </div>
             <div class="modal-body">
-                <p>Apply Excused status to <strong id="bulkExcusedCount">0</strong> selected record(s):</p>
+                <p>Update <strong id="bulkUpdateCount">0</strong> selected record(s):</p>
+                
                 <div class="bulk-field">
-                    <label class="bulk-label">Excused Status:</label>
+                    <label class="bulk-label">Excused Status: <span style="color: #e53e3e;">*</span></label>
                     <select class="bulk-select" id="bulkExcusedValue">
                         <option value="">— Select —</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="BulkActions.closeExcusedModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="BulkActions.applyExcused()">Apply to Selected</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Bulk Comment Modal -->
-    <div class="modal-overlay" id="bulkCommentModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Bulk Update Comment</h3>
-                <button class="modal-close" onclick="BulkActions.closeCommentModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p>Apply comment to <strong id="bulkCommentCount">0</strong> selected record(s):</p>
+                
                 <div class="bulk-field">
-                    <label class="bulk-label">Comment:</label>
+                    <label class="bulk-label">Comment: <span style="color: #e53e3e;">*</span></label>
                     <textarea class="bulk-textarea" id="bulkCommentValue" maxlength="500" placeholder="Enter comment (max 500 chars)..."></textarea>
                     <div class="char-count" id="bulkCharCount">0 / 500</div>
                 </div>
+                
+                <!-- AMH-specific fields (shown only for AMH persona) -->
+                <div id="bulkAmhFields" style="display: none;">
+                    <div class="bulk-amh-header">
+                        <span>🔐</span>
+                        <span>AMH Authorization Required</span>
+                    </div>
+                    
+                    <div class="bulk-field">
+                        <label class="bulk-label">
+                            <span>📝</span>
+                            <span>Authorization Reason: <span style="color: #e53e3e;">*</span></span>
+                        </label>
+                        <textarea class="bulk-textarea" id="bulkAmhReason" placeholder="Why are you acting on behalf? (e.g., 'Covering for SM - On leave')"></textarea>
+                    </div>
+                    
+                    <div class="bulk-field">
+                        <label class="bulk-label">
+                            <span>📎</span>
+                            <span>Supporting Document: <span style="color: #e53e3e;">*</span></span>
+                        </label>
+                        <div class="bulk-upload-area" id="bulkUploadArea" onclick="document.getElementById('bulkFileInput').click()">
+                            <div class="bulk-upload-icon">📎</div>
+                            <div class="bulk-upload-text" id="bulkUploadText">Click to Upload</div>
+                            <div class="bulk-upload-hint" id="bulkUploadHint">PDF, DOC, DOCX, JPG, PNG (Max 10MB)</div>
+                        </div>
+                        <input type="file" id="bulkFileInput" style="display: none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="BulkActions.handleBulkFileUpload(this)">
+                        <div class="bulk-file-display" id="bulkFileDisplay" style="display: none;">
+                            <span class="bulk-file-name" id="bulkFileName"></span>
+                            <button class="bulk-remove-btn" onclick="BulkActions.removeBulkFile(); event.stopPropagation();">Remove</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bulk-field">
+                        <label class="bulk-label">
+                            <span>📋</span>
+                            <span>Additional Notes: <span class="optional-tag">Optional</span></span>
+                        </label>
+                        <textarea class="bulk-textarea" id="bulkAmhNotes" style="min-height: 60px;" placeholder="Any additional context..."></textarea>
+                    </div>
+                </div>
+                
                 <div class="bulk-note">
-                    <strong>Note:</strong> This comment will be applied to all selected records. Per-row success/failure summary will be shown after submission.
+                    <strong>Note:</strong> <span id="bulkNoteText">Both Excused status and Comment will be applied to all selected records.</span> Per-row success/failure summary will be shown after submission.
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="BulkActions.closeCommentModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="BulkActions.applyComment()">Apply to Selected</button>
+                <button class="btn btn-secondary" onclick="BulkActions.closeBulkUpdateModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="BulkActions.applyBulkUpdate()">Apply to Selected</button>
             </div>
         </div>
     </div>
@@ -373,6 +418,7 @@
     <script src="js/auth-manager.js"></script>
     <script src="js/persona-manager.js"></script>
     <script src="js/filter-manager.js"></script>
+    <script src="js/column-filter.js"></script>
     <script src="js/selection-manager.js"></script>
     <script src="js/validation-manager.js"></script>
     <script src="js/table-renderer.js"></script>

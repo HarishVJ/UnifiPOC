@@ -24,6 +24,28 @@ const TableRenderer = {
             tr.innerHTML = this.renderRow(row, persona);
             tbody.appendChild(tr);
         });
+        
+        // Update select all checkbox state
+        this.updateSelectAllCheckbox(pageData);
+    },
+    
+    updateSelectAllCheckbox(pageData) {
+        const checkbox = document.getElementById('selectAllCheckbox');
+        if (!checkbox) return;
+        
+        // Check if all current page rows are selected
+        const allSelected = pageData.length > 0 && pageData.every(row => AppState.selectedRows.has(row.id));
+        checkbox.checked = allSelected;
+    },
+    
+    getVarianceClass(variance) {
+        if (variance <= 0) {
+            return 'ontime';
+        } else if (variance < 15) {
+            return 'warning';
+        } else {
+            return 'late';
+        }
     },
     
     renderRow(row, persona) {
@@ -40,6 +62,9 @@ const TableRenderer = {
             <td><span class="time-value">${row.scheduleOut}</span></td>
             <td><span class="time-value">${row.clockedIn}</span></td>
             <td><span class="time-value">${row.clockedOut}</span></td>
+            <td style="text-align: center;">
+                <span class="variance-badge ${this.getVarianceClass(row.variance)}">${row.variance}</span>
+            </td>
             <td>
                 <select class="excused-select excused-${row.excused === 'Yes' ? 'yes' : row.excused === 'No' ? 'no' : 'empty'}"
                         ${persona.canEditExcused ? '' : 'disabled'}
@@ -59,12 +84,6 @@ const TableRenderer = {
                 <div class="char-count" id="charCount-${row.id}">${row.comment ? row.comment.length : 0} / 500</div>
                 ${persona.showAMH ? this.renderAMHSection(row) : ''}
             </td>
-            <td>
-                <span class="kronos-badge kronos-${row.kronosStatus}">
-                    ${row.kronosStatus === 'success' ? '🟢 Success' : 
-                      row.kronosStatus === 'pending' ? '🟡 Pending' : '🔴 Failed'}
-                </span>
-            </td>
         `;
     },
     
@@ -72,73 +91,56 @@ const TableRenderer = {
         const hasReasonAndFile = row.amhReason && row.amhAttachment;
         
         return `
-            <div class="amh-section">
-                <div class="amh-header">
-                    <div class="amh-title">
-                        <span>🔐</span>
-                        <span>AMH Authorization</span>
-                    </div>
-                    <div class="amh-badge ${hasReasonAndFile ? 'complete' : ''}">
-                        ${hasReasonAndFile ? '✓ Complete' : '⚠ Required'}
-                    </div>
+            <div class="amh-section-inline">
+                <div class="amh-inline-header">
+                    <span class="amh-inline-icon">🔐</span>
+                    <span class="amh-inline-title">AMH Authorization</span>
+                    <span class="amh-inline-badge ${hasReasonAndFile ? 'complete' : 'pending'}">${hasReasonAndFile ? '✓' : '!'}</span>
+                    <span class="amh-inline-divider">|</span>
+                    <span class="amh-inline-sm">💬 Station Mgr: <em>${row.comment || 'No comment'}</em></span>
                 </div>
                 
-                <div class="amh-field">
-                    <div class="amh-field-label">
-                        <span class="amh-field-label-text">SM's Original Comment</span>
-                        <span class="optional-tag">Reference</span>
+                <div class="amh-inline-fields">
+                    <div class="amh-inline-field">
+                        <div class="amh-inline-label">
+                            <span>📝</span>
+                            <span>Reason*</span>
+                        </div>
+                        <textarea class="amh-inline-textarea"
+                                  id="amhReason-${row.id}"
+                                  placeholder="Why acting on behalf..."
+                                  onkeyup="FieldUpdater.updateField(${row.id}, 'amhReason', this.value)">${row.amhReason}</textarea>
                     </div>
-                    <div class="amh-context">
-                        <div class="amh-context-label">Site Manager wrote:</div>
-                        <div class="amh-context-text">${row.comment || 'No comment provided'}</div>
+                    
+                    <div class="amh-inline-field amh-inline-upload">
+                        <div class="amh-inline-label">
+                            <span>📎</span>
+                            <span>Document*</span>
+                        </div>
+                        <div class="amh-inline-upload-btn ${row.amhAttachment ? 'uploaded' : ''}" 
+                             onclick="document.getElementById('fileInput-${row.id}').click()">
+                            ${row.amhAttachment ? 
+                                `<span class="amh-inline-file-name">✓ ${row.amhAttachment}</span>
+                                 <button class="amh-inline-remove" onclick="FieldUpdater.removeFile(${row.id}); event.stopPropagation();">✕</button>` :
+                                `<span class="amh-inline-upload-text">📤 Upload</span>`
+                            }
+                        </div>
+                        <input type="file" 
+                               id="fileInput-${row.id}" 
+                               style="display: none;"
+                               accept="${AppConfig.ACCEPTED_FILE_TYPES}"
+                               onchange="FieldUpdater.handleFileUpload(${row.id}, this)">
                     </div>
-                </div>
-                
-                <div class="amh-field">
-                    <div class="amh-field-label">
-                        <span class="amh-field-label-text">Authorization Reason<span class="required-star">*</span></span>
+                    
+                    <div class="amh-inline-field">
+                        <div class="amh-inline-label">
+                            <span>📋</span>
+                            <span>Notes</span>
+                        </div>
+                        <textarea class="amh-inline-textarea"
+                                  placeholder="Additional context..."
+                                  onkeyup="FieldUpdater.updateField(${row.id}, 'amhNotes', this.value)">${row.amhNotes}</textarea>
                     </div>
-                    <textarea class="amh-textarea"
-                              id="amhReason-${row.id}"
-                              placeholder="Why are you acting on behalf? (e.g., 'Covering for SM - On leave')"
-                              onkeyup="FieldUpdater.updateField(${row.id}, 'amhReason', this.value)">${row.amhReason}</textarea>
-                    <div class="amh-hint">Provide clear justification - this is audited for compliance</div>
-                </div>
-                
-                <div class="amh-field">
-                    <div class="amh-field-label">
-                        <span class="amh-field-label-text">Supporting Document<span class="required-star">*</span></span>
-                    </div>
-                    <div class="amh-upload-area ${row.amhAttachment ? 'has-file' : ''}" 
-                         id="uploadArea-${row.id}"
-                         onclick="document.getElementById('fileInput-${row.id}').click()">
-                        <div class="amh-upload-icon">${row.amhAttachment ? '✓' : '📎'}</div>
-                        <div class="amh-upload-text">${row.amhAttachment ? 'File Uploaded' : 'Click to Upload'}</div>
-                        <div class="amh-upload-hint">${row.amhAttachment ? row.amhAttachment : 'PDF, DOC, DOCX, JPG, PNG (Max 10MB)'}</div>
-                    </div>
-                    <input type="file" 
-                           id="fileInput-${row.id}" 
-                           style="display: none;"
-                           accept="${AppConfig.ACCEPTED_FILE_TYPES}"
-                           onchange="FieldUpdater.handleFileUpload(${row.id}, this)">
-                    ${row.amhAttachment ? `
-                    <div class="amh-file-display show">
-                        <span class="amh-file-name">📄 ${row.amhAttachment}</span>
-                        <button class="amh-remove-btn" onclick="FieldUpdater.removeFile(${row.id}); event.stopPropagation();">Remove</button>
-                    </div>
-                    ` : ''}
-                    <div class="amh-hint">🔒 Files encrypted and retained 90+ days for compliance</div>
-                </div>
-                
-                <div class="amh-field">
-                    <div class="amh-field-label">
-                        <span class="amh-field-label-text">Additional Notes</span>
-                        <span class="optional-tag">Optional</span>
-                    </div>
-                    <textarea class="amh-textarea"
-                              style="min-height: 60px;"
-                              placeholder="Any additional context or information..."
-                              onkeyup="FieldUpdater.updateField(${row.id}, 'amhNotes', this.value)">${row.amhNotes}</textarea>
                 </div>
             </div>
         `;

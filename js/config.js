@@ -5,8 +5,8 @@
 
 const PersonaConfig = {
     sm: {
-        name: 'Site Manager',
-        role: 'Site Manager',
+        name: 'Station Manager',
+        role: 'Station Manager',
         canEdit: true,
         canEditExcused: true,
         canEditComment: true,

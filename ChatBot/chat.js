@@ -836,51 +836,6 @@ function updateFileName(input) {
     }
 }
 
-// Handle chat input keydown (Enter to send)
-function handleChatInputKeydown(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendChatMessage();
-    }
-}
-
-// Auto-resize textarea
-function autoResizeTextarea(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-}
-
-// Send chat message
-function sendChatMessage() {
-    const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    // Display user message
-    const chatContainer = document.getElementById('chatContainer');
-    const userMsg = document.createElement('div');
-    userMsg.className = 'message';
-    userMsg.innerHTML = `<div class="message-content" style="background: #deecf9; border-color: #6264a7; margin-left: auto; max-width: 80%;">${message}</div>`;
-    chatContainer.appendChild(userMsg);
-    
-    // Clear input
-    input.value = '';
-    input.style.height = 'auto';
-    
-    // Scroll to bottom
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    
-    // Process message (you can add AI/bot logic here)
-    setTimeout(() => {
-        const botMsg = document.createElement('div');
-        botMsg.className = 'message';
-        botMsg.innerHTML = `<div class="message-content">I received your message: "${message}". This is a placeholder response. You can integrate AI or custom logic here.</div>`;
-        chatContainer.appendChild(botMsg);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 500);
-}
-
 // Add button click sound/feedback
 function addButtonFeedback(button) {
     button.style.transform = 'scale(0.95)';

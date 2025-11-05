@@ -66,11 +66,22 @@
         ::-webkit-scrollbar-track { background: #f3f2f1; }
         ::-webkit-scrollbar-thumb { background: #c8c6c4; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #a19f9d; }
+        /* Chat Input */
+        .chat-input-wrapper { background: white; border-top: 1px solid #e1dfdd; padding: 12px 20px; display: flex; gap: 8px; align-items: center; }
+        .chat-input { flex: 1; padding: 8px 12px; border: 1px solid #8a8886; border-radius: 2px; font-size: 14px; font-family: 'Segoe UI', sans-serif; resize: none; min-height: 40px; max-height: 120px; }
+        .chat-input:focus { outline: none; border-color: #6264a7; box-shadow: 0 0 0 1px #6264a7; }
+        .chat-send-btn { padding: 8px 20px; background: #6264a7; color: white; border: none; border-radius: 2px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.1s; box-shadow: 0 0.3px 0.9px rgba(0,0,0,0.1), 0 1.6px 3.6px rgba(0,0,0,0.13); }
+        .chat-send-btn:hover { background: #464775; }
+        .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* User message style */
+        .user-message { margin-left: auto; max-width: 70%; }
+        .user-message .message-content { background: #deecf9; border-color: #6264a7; }
         /* Responsive */
         @media (max-width: 768px) {
             .chat-container { padding: 12px; }
             .record-grid { grid-template-columns: 1fr; }
             .record-card { padding: 12px; }
+            .chat-input-wrapper { padding: 8px 12px; }
         }
     </style>
 </head>
@@ -90,6 +101,12 @@
     </div>
     <div class="chat-wrapper">
         <div class="chat-container" id="chatContainer"></div>
+    </div>
+    <div class="chat-input-wrapper">
+        <textarea id="chatInput" class="chat-input" placeholder="Type a message or use the buttons above..." rows="1" onkeydown="handleChatInputKeydown(event)" oninput="autoResizeTextarea(this)"></textarea>
+        <button class="chat-send-btn" onclick="sendChatMessage()">
+            <span style="font-size: 16px;">➤</span>
+        </button>
     </div>
     <script src="chat.js"></script>
 </body>

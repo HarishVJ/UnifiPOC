@@ -214,70 +214,91 @@ const CONFIG = {
     }
 };
 
-// Sample Data
-const SAMPLE_DATA = {
+// Sample Data - Will be loaded from JSON file
+let SAMPLE_DATA = {
     user_name: "John Doe",
-    total_late_in_count: 15,
-    station_count: 3,
-    date_range: "Nov 1-4, 2024",
-    default_date_range: "Nov 1-4, 2024",
-    stations: [
-        { name: "Las Vegas", count: 5 },
-        { name: "Houston", count: 6 },
-        { name: "Atlanta", count: 4 }
-    ],
-    lines_of_service: [
-        { name: "Wheelchair", count: 8 },
-        { name: "Ambulatory", count: 4 },
-        { name: "Stretcher", count: 3 }
-    ],
-    records: [
-        {
-            emp_name: "Alice Johnson",
-            emp_id: "EMP001",
-            date: "2024-11-04",
-            sched_in: "08:00 AM",
-            actual_in: "08:45 AM",
-            time_diff: "45",
-            station_name: "Las Vegas",
-            line_of_service: "Wheelchair",
-            points: "1.0"
-        },
-        {
-            emp_name: "Bob Smith",
-            emp_id: "EMP002",
-            date: "2024-11-04",
-            sched_in: "09:00 AM",
-            actual_in: "09:30 AM",
-            time_diff: "30",
-            station_name: "Houston",
-            line_of_service: "Ambulatory",
-            points: "1.0"
-        },
-        {
-            emp_name: "Carol Williams",
-            emp_id: "EMP003",
-            date: "2024-11-03",
-            sched_in: "07:30 AM",
-            actual_in: "08:15 AM",
-            time_diff: "45",
-            station_name: "Las Vegas",
-            line_of_service: "Wheelchair",
-            points: "1.0"
-        },
-        {
-            emp_name: "David Lee",
-            emp_id: "EMP004",
-            date: "2024-11-04",
-            sched_in: "07:00 AM",
-            actual_in: "07:20 AM",
-            time_diff: "20",
-            station_name: "Atlanta",
-            line_of_service: "Stretcher",
-            points: "1.0"
-        }
-    ]
+    total_late_in_count: 0,
+    station_count: 0,
+    date_range: "Nov 1-5, 2024",
+    default_date_range: "Nov 1-5, 2024",
+    stations: [],
+    lines_of_service: [],
+    records: []
 };
+
+// Load data from JSON file
+async function loadSampleData() {
+    try {
+        const response = await fetch('sample-data.json');
+        const data = await response.json();
+        SAMPLE_DATA = data;
+        sessionData = { ...SAMPLE_DATA };
+        console.log('✅ Loaded sample data:', SAMPLE_DATA.records.length, 'records');
+    } catch (error) {
+        console.error('❌ Error loading sample data:', error);
+        // Fallback to minimal data if file not found
+        SAMPLE_DATA = {
+            user_name: "John Doe",
+            total_late_in_count: 4,
+            station_count: 3,
+            date_range: "Nov 1-5, 2024",
+            default_date_range: "Nov 1-5, 2024",
+            stations: [
+                { name: "Las Vegas", count: 2 },
+                { name: "Houston", count: 1 },
+                { name: "Atlanta", count: 1 }
+            ],
+            lines_of_service: [
+                { name: "Wheelchair", count: 2 },
+                { name: "Ambulatory", count: 1 },
+                { name: "Stretcher", count: 1 }
+            ],
+            records: [
+                {
+                    emp_name: "Alice Johnson",
+                    emp_id: "EMP001",
+                    date: "2024-11-04",
+                    sched_in: "08:00 AM",
+                    actual_in: "08:45 AM",
+                    time_diff: "45",
+                    station_name: "Las Vegas",
+                    line_of_service: "Wheelchair"
+                },
+                {
+                    emp_name: "Bob Smith",
+                    emp_id: "EMP002",
+                    date: "2024-11-04",
+                    sched_in: "09:00 AM",
+                    actual_in: "09:30 AM",
+                    time_diff: "30",
+                    station_name: "Houston",
+                    line_of_service: "Ambulatory"
+                },
+                {
+                    emp_name: "Carol Williams",
+                    emp_id: "EMP003",
+                    date: "2024-11-03",
+                    sched_in: "07:30 AM",
+                    actual_in: "08:15 AM",
+                    time_diff: "45",
+                    station_name: "Las Vegas",
+                    line_of_service: "Wheelchair"
+                },
+                {
+                    emp_name: "David Lee",
+                    emp_id: "EMP004",
+                    date: "2024-11-04",
+                    sched_in: "07:00 AM",
+                    actual_in: "07:20 AM",
+                    time_diff: "20",
+                    station_name: "Atlanta",
+                    line_of_service: "Stretcher"
+                }
+            ]
+        };
+        sessionData = { ...SAMPLE_DATA };
+    }
+}
 
 // Chatbot State
 let currentPersona = 'StationManager';
@@ -836,11 +857,461 @@ function updateFileName(input) {
     }
 }
 
+// Handle chat input keydown (Enter to send)
+function handleChatInputKeydown(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendChatMessage();
+    }
+}
+
+// Auto-resize textarea
+function autoResizeTextarea(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+}
+
+// Send chat message - Interactive with adaptive cards
+function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim().toLowerCase();
+    
+    if (!message) return;
+    
+    // Display user message
+    const chatContainer = document.getElementById('chatContainer');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'message user-message';
+    userMsg.innerHTML = `<div class="message-content">${input.value.trim()}</div>`;
+    chatContainer.appendChild(userMsg);
+    
+    // Clear input
+    input.value = '';
+    input.style.height = 'auto';
+    
+    // Scroll to bottom
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    // Process user intent and respond with adaptive cards
+    setTimeout(() => {
+        processUserMessage(message);
+    }, 500);
+}
+
+// Process user message and trigger appropriate adaptive card response
+function processUserMessage(message) {
+    const chatContainer = document.getElementById('chatContainer');
+    
+    // 1. Filter by Station
+    if (message.includes('las vegas') || message.includes('houston') || message.includes('atlanta') ||
+        (message.includes('filter') && message.includes('station'))) {
+        handleStationFilter(message, chatContainer);
+    }
+    // 2. Filter by Line of Service
+    else if (message.includes('wheelchair') || message.includes('ambulatory') || message.includes('stretcher') ||
+             (message.includes('filter') && (message.includes('service') || message.includes('line')))) {
+        handleLineOfServiceFilter(message, chatContainer);
+    }
+    // 3. Bulk Actions
+    else if ((message.includes('excuse') || message.includes('deny') || message.includes('approve')) && 
+             (message.includes('all') || message.includes('bulk') || message.includes('same'))) {
+        handleBulkActionIntent(message, chatContainer);
+    }
+    // 4. Search Employee
+    else if (message.includes('find') || message.includes('search') || message.includes('emp')) {
+        handleEmployeeSearch(message, chatContainer);
+    }
+    // 5. Date Filtering
+    else if (message.includes('today') || message.includes('yesterday') || message.includes('date') || 
+             message.includes('nov') || message.includes('november')) {
+        handleDateFilter(message, chatContainer);
+    }
+    // 6. Status/Count Check
+    else if ((message.includes('how many') || message.includes('count') || message.includes('total') || 
+              message.includes('pending')) && !message.includes('show')) {
+        handleStatusCheck(chatContainer);
+    }
+    // 7. View Records
+    else if (message.includes('show') || message.includes('view') || message.includes('see') || 
+             message.includes('display') || message.includes('list') || message.includes('records')) {
+        renderStep('record_list');
+    } 
+    // 8. View Summary
+    else if (message.includes('summary') || message.includes('overview') || message.includes('stats')) {
+        renderStep('summary_view');
+    }
+    // 9. Start Review
+    else if (message.includes('start') || message.includes('begin') || message.includes('review') || 
+             message.includes('yes') || message.includes('ok') || message.includes('sure')) {
+        renderStep('record_list');
+    }
+    // 10. Postpone
+    else if (message.includes('later') || message.includes('remind') || message.includes('not now') || 
+             message.includes('no')) {
+        renderStep('end_session');
+    }
+    // 11. Help
+    else if (message.includes('help') || message.includes('what') || message.includes('how')) {
+        showHelpMessage(chatContainer);
+    }
+    // 12. Unknown
+    else {
+        showDefaultSuggestions(message, chatContainer);
+    }
+}
+
+// Handle station filter
+function handleStationFilter(message, chatContainer) {
+    let station = '';
+    if (message.includes('las vegas')) station = 'Las Vegas';
+    else if (message.includes('houston')) station = 'Houston';
+    else if (message.includes('atlanta')) station = 'Atlanta';
+    
+    if (station) {
+        const filtered = sessionData.records.filter(r => r.station_name === station);
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message';
+        botMsg.innerHTML = `
+            <div class="message-content">
+                ✅ Filtered to show only <strong>${station}</strong> station.<br>
+                Found <strong>${filtered.length}</strong> record(s).
+            </div>
+            <div class="buttons" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="filterByStation('${station}')">📋 Show ${station} Records</button>
+                <button class="btn btn-secondary" onclick="renderStep('record_list')">🔄 Show All</button>
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+    } else {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message';
+        botMsg.innerHTML = `
+            <div class="message-content">
+                Which station would you like to filter by?
+            </div>
+            <div class="buttons" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="filterByStation('Las Vegas')">Las Vegas</button>
+                <button class="btn btn-primary" onclick="filterByStation('Houston')">Houston</button>
+                <button class="btn btn-primary" onclick="filterByStation('Atlanta')">Atlanta</button>
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+    }
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Handle line of service filter
+function handleLineOfServiceFilter(message, chatContainer) {
+    let los = '';
+    if (message.includes('wheelchair')) los = 'Wheelchair';
+    else if (message.includes('ambulatory')) los = 'Ambulatory';
+    else if (message.includes('stretcher')) los = 'Stretcher';
+    
+    if (los) {
+        const filtered = sessionData.records.filter(r => r.line_of_service === los);
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message';
+        botMsg.innerHTML = `
+            <div class="message-content">
+                ✅ Filtered to show only <strong>${los}</strong> service.<br>
+                Found <strong>${filtered.length}</strong> record(s).
+            </div>
+            <div class="buttons" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="filterByLineOfService('${los}')">📋 Show ${los} Records</button>
+                <button class="btn btn-secondary" onclick="renderStep('record_list')">🔄 Show All</button>
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+    } else {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message';
+        botMsg.innerHTML = `
+            <div class="message-content">
+                Which line of service would you like to filter by?
+            </div>
+            <div class="buttons" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="filterByLineOfService('Wheelchair')">♿ Wheelchair</button>
+                <button class="btn btn-primary" onclick="filterByLineOfService('Ambulatory')">🚶 Ambulatory</button>
+                <button class="btn btn-primary" onclick="filterByLineOfService('Stretcher')">🛏️ Stretcher</button>
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+    }
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Handle bulk action intent
+function handleBulkActionIntent(message, chatContainer) {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'message';
+    botMsg.innerHTML = `
+        <div class="message-content">
+            💡 To apply the same action to all records:<br><br>
+            1. Go to the records view<br>
+            2. Check the <strong>"Apply same action to all records"</strong> checkbox<br>
+            3. Enter your comment and select Excuse/Deny
+        </div>
+        <div class="buttons" style="margin-top: 12px;">
+            <button class="btn btn-primary" onclick="renderStep('record_list')">📋 Go to Records</button>
+        </div>
+    `;
+    chatContainer.appendChild(botMsg);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Handle employee search
+function handleEmployeeSearch(message, chatContainer) {
+    // Extract employee name or ID
+    const words = message.split(' ');
+    let searchTerm = '';
+    
+    // Look for EMP pattern
+    const empMatch = message.match(/emp\d+/i);
+    if (empMatch) {
+        searchTerm = empMatch[0].toUpperCase();
+    } else {
+        // Try to find name (capitalize first letter of each word after common words)
+        const nameWords = words.filter(w => !['find', 'search', 'show', 'for', 'employee'].includes(w));
+        searchTerm = nameWords.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+    
+    if (searchTerm) {
+        const found = sessionData.records.filter(r => 
+            r.emp_name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            r.emp_id.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        if (found.length > 0) {
+            const botMsg = document.createElement('div');
+            botMsg.className = 'message';
+            botMsg.innerHTML = `
+                <div class="message-content">
+                    ✅ Found <strong>${found.length}</strong> record(s) for "<strong>${searchTerm}</strong>":<br><br>
+                    ${found.map(r => `• ${r.emp_name} (${r.emp_id}) - ${r.date}`).join('<br>')}
+                </div>
+                <div class="buttons" style="margin-top: 12px;">
+                    <button class="btn btn-primary" onclick="searchEmployee('${searchTerm}')">📋 Show Records</button>
+                    <button class="btn btn-secondary" onclick="renderStep('record_list')">🔄 Show All</button>
+                </div>
+            `;
+            chatContainer.appendChild(botMsg);
+        } else {
+            const botMsg = document.createElement('div');
+            botMsg.className = 'message';
+            botMsg.innerHTML = `
+                <div class="message-content">
+                    ❌ No records found for "<strong>${searchTerm}</strong>".
+                </div>
+                <div class="buttons" style="margin-top: 12px;">
+                    <button class="btn btn-primary" onclick="renderStep('record_list')">📋 View All Records</button>
+                </div>
+            `;
+            chatContainer.appendChild(botMsg);
+        }
+    } else {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message';
+        botMsg.innerHTML = `
+            <div class="message-content">
+                Please specify an employee name or ID to search.<br>
+                Example: "find Alice Johnson" or "search EMP001"
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+    }
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Handle date filter
+function handleDateFilter(message, chatContainer) {
+    let dateFilter = '';
+    const today = new Date().toISOString().split('T')[0];
+    
+    if (message.includes('today')) {
+        dateFilter = today;
+    } else if (message.includes('yesterday')) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        dateFilter = yesterday.toISOString().split('T')[0];
+    }
+    
+    if (dateFilter) {
+        const filtered = sessionData.records.filter(r => r.date === dateFilter);
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message';
+        botMsg.innerHTML = `
+            <div class="message-content">
+                ✅ Filtered to show records from <strong>${dateFilter}</strong>.<br>
+                Found <strong>${filtered.length}</strong> record(s).
+            </div>
+            <div class="buttons" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="filterByDate('${dateFilter}')">📋 Show Records</button>
+                <button class="btn btn-secondary" onclick="renderStep('record_list')">🔄 Show All</button>
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+    } else {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message';
+        botMsg.innerHTML = `
+            <div class="message-content">
+                Which date would you like to filter by?
+            </div>
+            <div class="buttons" style="margin-top: 12px;">
+                <button class="btn btn-primary" onclick="filterByDate('${today}')">📅 Today</button>
+                <button class="btn btn-secondary" onclick="renderStep('record_list')">📋 All Dates</button>
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+    }
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Handle status check
+function handleStatusCheck(chatContainer) {
+    const totalRecords = sessionData.records.length;
+    const savedCount = window.savedRecords ? window.savedRecords.length : 0;
+    const pendingCount = totalRecords - savedCount;
+    
+    const stations = [...new Set(sessionData.records.map(r => r.station_name))];
+    const botMsg = document.createElement('div');
+    botMsg.className = 'message';
+    botMsg.innerHTML = `
+        <div class="message-content">
+            <strong>📊 Current Status:</strong><br><br>
+            • Total Records: <strong>${totalRecords}</strong><br>
+            • Processed: <strong>${savedCount}</strong><br>
+            • Pending: <strong>${pendingCount}</strong><br>
+            • Stations: <strong>${stations.join(', ')}</strong>
+        </div>
+        <div class="buttons" style="margin-top: 12px;">
+            <button class="btn btn-primary" onclick="renderStep('record_list')">📋 View Records</button>
+            <button class="btn btn-secondary" onclick="renderStep('summary_view')">📊 Full Summary</button>
+        </div>
+    `;
+    chatContainer.appendChild(botMsg);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Show help message
+function showHelpMessage(chatContainer) {
+    const helpMsg = document.createElement('div');
+    helpMsg.className = 'message';
+    helpMsg.innerHTML = `
+        <div class="message-content">
+            <strong>💡 How to use this chatbot:</strong><br><br>
+            <strong>You can type:</strong><br>
+            • "Show me the records" - View all records<br>
+            • "Filter by Las Vegas" - Filter by station<br>
+            • "Show wheelchair records" - Filter by service<br>
+            • "Find Alice Johnson" - Search employee<br>
+            • "Show today's records" - Filter by date<br>
+            • "How many records" - Check status<br>
+            • "View summary" - See statistics<br>
+            • "Excuse all" - Bulk action help<br><br>
+            <strong>Or click buttons</strong> on the adaptive cards!
+        </div>
+    `;
+    chatContainer.appendChild(helpMsg);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Show default suggestions
+function showDefaultSuggestions(message, chatContainer) {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'message';
+    botMsg.innerHTML = `
+        <div class="message-content">
+            I understand you said: "<em>${message}</em>"<br><br>
+            Here are some things you can do:
+        </div>
+        <div class="buttons" style="margin-top: 12px;">
+            <button class="btn btn-primary" onclick="renderStep('record_list')">📋 View Records</button>
+            <button class="btn btn-secondary" onclick="renderStep('summary_view')">📊 View Summary</button>
+            <button class="btn btn-secondary" onclick="showHelpMessage(document.getElementById('chatContainer'))">💡 Help</button>
+        </div>
+    `;
+    chatContainer.appendChild(botMsg);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
 // Add button click sound/feedback
 function addButtonFeedback(button) {
     button.style.transform = 'scale(0.95)';
     setTimeout(() => {
         button.style.transform = 'scale(1)';
+    }, 100);
+}
+
+// Filter functions called by buttons
+function filterByStation(station) {
+    const chatContainer = document.getElementById('chatContainer');
+    const filtered = sessionData.records.filter(r => r.station_name === station);
+    
+    // Temporarily store filtered records
+    const originalRecords = sessionData.records;
+    sessionData.records = filtered;
+    
+    // Render filtered records
+    renderStep('record_list');
+    
+    // Restore original records after rendering
+    setTimeout(() => {
+        sessionData.records = originalRecords;
+    }, 100);
+}
+
+function filterByLineOfService(los) {
+    const chatContainer = document.getElementById('chatContainer');
+    const filtered = sessionData.records.filter(r => r.line_of_service === los);
+    
+    // Temporarily store filtered records
+    const originalRecords = sessionData.records;
+    sessionData.records = filtered;
+    
+    // Render filtered records
+    renderStep('record_list');
+    
+    // Restore original records after rendering
+    setTimeout(() => {
+        sessionData.records = originalRecords;
+    }, 100);
+}
+
+function filterByDate(date) {
+    const chatContainer = document.getElementById('chatContainer');
+    const filtered = sessionData.records.filter(r => r.date === date);
+    
+    // Temporarily store filtered records
+    const originalRecords = sessionData.records;
+    sessionData.records = filtered;
+    
+    // Render filtered records
+    renderStep('record_list');
+    
+    // Restore original records after rendering
+    setTimeout(() => {
+        sessionData.records = originalRecords;
+    }, 100);
+}
+
+function searchEmployee(searchTerm) {
+    const chatContainer = document.getElementById('chatContainer');
+    const filtered = sessionData.records.filter(r => 
+        r.emp_name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        r.emp_id.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    // Temporarily store filtered records
+    const originalRecords = sessionData.records;
+    sessionData.records = filtered;
+    
+    // Render filtered records
+    renderStep('record_list');
+    
+    // Restore original records after rendering
+    setTimeout(() => {
+        sessionData.records = originalRecords;
     }, 100);
 }
 
@@ -853,7 +1324,10 @@ function handleButtonClick(nextStep, btnIdx) {
 }
 
 // Initialize on page load
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+    // Load sample data first
+    await loadSampleData();
+    
     // Add welcome message
     const chatContainer = document.getElementById('chatContainer');
     const welcomeDiv = document.createElement('div');

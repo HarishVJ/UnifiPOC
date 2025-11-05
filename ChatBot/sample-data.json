@@ -1,0 +1,268 @@
+{
+  "user_name": "John Doe",
+  "total_late_in_count": 25,
+  "station_count": 3,
+  "date_range": "Nov 1-5, 2024",
+  "stations": [
+    { "name": "Las Vegas", "count": 10 },
+    { "name": "Houston", "count": 8 },
+    { "name": "Atlanta", "count": 7 }
+  ],
+  "lines_of_service": [
+    { "name": "Wheelchair", "count": 12 },
+    { "name": "Ambulatory", "count": 8 },
+    { "name": "Stretcher", "count": 5 }
+  ],
+  "records": [
+    {
+      "emp_id": "EMP001",
+      "emp_name": "Alice Johnson",
+      "date": "2024-11-04",
+      "station_name": "Las Vegas",
+      "line_of_service": "Wheelchair",
+      "sched_in": "08:00 AM",
+      "actual_in": "08:45 AM",
+      "time_diff": "45"
+    },
+    {
+      "emp_id": "EMP002",
+      "emp_name": "Bob Smith",
+      "date": "2024-11-04",
+      "station_name": "Las Vegas",
+      "line_of_service": "Ambulatory",
+      "sched_in": "07:30 AM",
+      "actual_in": "08:15 AM",
+      "time_diff": "45"
+    },
+    {
+      "emp_id": "EMP003",
+      "emp_name": "Carol Martinez",
+      "date": "2024-11-05",
+      "station_name": "Las Vegas",
+      "line_of_service": "Wheelchair",
+      "sched_in": "09:00 AM",
+      "actual_in": "09:30 AM",
+      "time_diff": "30"
+    },
+    {
+      "emp_id": "EMP004",
+      "emp_name": "David Lee",
+      "date": "2024-11-03",
+      "station_name": "Las Vegas",
+      "line_of_service": "Stretcher",
+      "sched_in": "06:00 AM",
+      "actual_in": "06:50 AM",
+      "time_diff": "50"
+    },
+    {
+      "emp_id": "EMP005",
+      "emp_name": "Emma Wilson",
+      "date": "2024-11-05",
+      "station_name": "Las Vegas",
+      "line_of_service": "Wheelchair",
+      "sched_in": "08:30 AM",
+      "actual_in": "09:05 AM",
+      "time_diff": "35"
+    },
+    {
+      "emp_id": "EMP006",
+      "emp_name": "Frank Brown",
+      "date": "2024-11-02",
+      "station_name": "Las Vegas",
+      "line_of_service": "Ambulatory",
+      "sched_in": "07:00 AM",
+      "actual_in": "07:40 AM",
+      "time_diff": "40"
+    },
+    {
+      "emp_id": "EMP007",
+      "emp_name": "Grace Taylor",
+      "date": "2024-11-04",
+      "station_name": "Las Vegas",
+      "line_of_service": "Wheelchair",
+      "sched_in": "10:00 AM",
+      "actual_in": "10:25 AM",
+      "time_diff": "25"
+    },
+    {
+      "emp_id": "EMP008",
+      "emp_name": "Henry Anderson",
+      "date": "2024-11-01",
+      "station_name": "Las Vegas",
+      "line_of_service": "Stretcher",
+      "sched_in": "06:30 AM",
+      "actual_in": "07:20 AM",
+      "time_diff": "50"
+    },
+    {
+      "emp_id": "EMP009",
+      "emp_name": "Iris Chen",
+      "date": "2024-11-05",
+      "station_name": "Las Vegas",
+      "line_of_service": "Wheelchair",
+      "sched_in": "09:30 AM",
+      "actual_in": "10:00 AM",
+      "time_diff": "30"
+    },
+    {
+      "emp_id": "EMP010",
+      "emp_name": "Jack Robinson",
+      "date": "2024-11-03",
+      "station_name": "Las Vegas",
+      "line_of_service": "Ambulatory",
+      "sched_in": "08:00 AM",
+      "actual_in": "08:35 AM",
+      "time_diff": "35"
+    },
+    {
+      "emp_id": "EMP011",
+      "emp_name": "Karen White",
+      "date": "2024-11-04",
+      "station_name": "Houston",
+      "line_of_service": "Wheelchair",
+      "sched_in": "07:00 AM",
+      "actual_in": "07:55 AM",
+      "time_diff": "55"
+    },
+    {
+      "emp_id": "EMP012",
+      "emp_name": "Leo Garcia",
+      "date": "2024-11-05",
+      "station_name": "Houston",
+      "line_of_service": "Ambulatory",
+      "sched_in": "08:00 AM",
+      "actual_in": "08:40 AM",
+      "time_diff": "40"
+    },
+    {
+      "emp_id": "EMP013",
+      "emp_name": "Maria Rodriguez",
+      "date": "2024-11-03",
+      "station_name": "Houston",
+      "line_of_service": "Wheelchair",
+      "sched_in": "09:00 AM",
+      "actual_in": "09:45 AM",
+      "time_diff": "45"
+    },
+    {
+      "emp_id": "EMP014",
+      "emp_name": "Nathan Kim",
+      "date": "2024-11-04",
+      "station_name": "Houston",
+      "line_of_service": "Stretcher",
+      "sched_in": "06:30 AM",
+      "actual_in": "07:15 AM",
+      "time_diff": "45"
+    },
+    {
+      "emp_id": "EMP015",
+      "emp_name": "Olivia Patel",
+      "date": "2024-11-02",
+      "station_name": "Houston",
+      "line_of_service": "Wheelchair",
+      "sched_in": "08:30 AM",
+      "actual_in": "09:10 AM",
+      "time_diff": "40"
+    },
+    {
+      "emp_id": "EMP016",
+      "emp_name": "Peter Thompson",
+      "date": "2024-11-05",
+      "station_name": "Houston",
+      "line_of_service": "Ambulatory",
+      "sched_in": "07:30 AM",
+      "actual_in": "08:00 AM",
+      "time_diff": "30"
+    },
+    {
+      "emp_id": "EMP017",
+      "emp_name": "Quinn Davis",
+      "date": "2024-11-01",
+      "station_name": "Houston",
+      "line_of_service": "Wheelchair",
+      "sched_in": "10:00 AM",
+      "actual_in": "10:50 AM",
+      "time_diff": "50"
+    },
+    {
+      "emp_id": "EMP018",
+      "emp_name": "Rachel Green",
+      "date": "2024-11-04",
+      "station_name": "Houston",
+      "line_of_service": "Stretcher",
+      "sched_in": "06:00 AM",
+      "actual_in": "06:35 AM",
+      "time_diff": "35"
+    },
+    {
+      "emp_id": "EMP019",
+      "emp_name": "Samuel Jackson",
+      "date": "2024-11-05",
+      "station_name": "Atlanta",
+      "line_of_service": "Wheelchair",
+      "sched_in": "08:00 AM",
+      "actual_in": "08:50 AM",
+      "time_diff": "50"
+    },
+    {
+      "emp_id": "EMP020",
+      "emp_name": "Tina Turner",
+      "date": "2024-11-03",
+      "station_name": "Atlanta",
+      "line_of_service": "Ambulatory",
+      "sched_in": "07:00 AM",
+      "actual_in": "07:45 AM",
+      "time_diff": "45"
+    },
+    {
+      "emp_id": "EMP021",
+      "emp_name": "Uma Thurman",
+      "date": "2024-11-04",
+      "station_name": "Atlanta",
+      "line_of_service": "Wheelchair",
+      "sched_in": "09:00 AM",
+      "actual_in": "09:25 AM",
+      "time_diff": "25"
+    },
+    {
+      "emp_id": "EMP022",
+      "emp_name": "Victor Hugo",
+      "date": "2024-11-02",
+      "station_name": "Atlanta",
+      "line_of_service": "Stretcher",
+      "sched_in": "06:30 AM",
+      "actual_in": "07:25 AM",
+      "time_diff": "55"
+    },
+    {
+      "emp_id": "EMP023",
+      "emp_name": "Wendy Williams",
+      "date": "2024-11-05",
+      "station_name": "Atlanta",
+      "line_of_service": "Ambulatory",
+      "sched_in": "08:30 AM",
+      "actual_in": "09:00 AM",
+      "time_diff": "30"
+    },
+    {
+      "emp_id": "EMP024",
+      "emp_name": "Xavier Woods",
+      "date": "2024-11-01",
+      "station_name": "Atlanta",
+      "line_of_service": "Wheelchair",
+      "sched_in": "07:30 AM",
+      "actual_in": "08:10 AM",
+      "time_diff": "40"
+    },
+    {
+      "emp_id": "EMP025",
+      "emp_name": "Yolanda Adams",
+      "date": "2024-11-04",
+      "station_name": "Atlanta",
+      "line_of_service": "Ambulatory",
+      "sched_in": "10:00 AM",
+      "actual_in": "10:35 AM",
+      "time_diff": "35"
+    }
+  ]
+}
